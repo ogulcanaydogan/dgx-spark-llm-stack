@@ -60,13 +60,18 @@ jobs:
           set -euo pipefail
           source .venv-bench-ci/bin/activate
           export HF_HUB_DISABLE_PROGRESS_BARS=1
+          export TRANSFORMERS_VERBOSITY=error
+          export BITSANDBYTES_NOWELCOME=1
+          mkdir -p artifacts/benchmarks/logs
           python -u scripts/benchmark_inference.py \
             --models Qwen/Qwen2.5-7B-Instruct,Qwen/Qwen2.5-14B-Instruct,Qwen/Qwen2.5-32B-Instruct \
             --quantizations fp16,nf4,fp4 \
             --tokens 256 \
             --runs 5 \
             --device-map cuda \
-            --output-json "${INFERENCE_JSON}"
+            --output-json "${INFERENCE_JSON}" \
+            > "artifacts/benchmarks/logs/inference-${BENCH_DATE}.log" 2>&1
+          tail -n 40 "artifacts/benchmarks/logs/inference-${BENCH_DATE}.log"
 
       - name: Run perplexity matrix (WikiText-2 validation)
         shell: bash
@@ -74,6 +79,8 @@ jobs:
           set -euo pipefail
           source .venv-bench-ci/bin/activate
           export HF_HUB_DISABLE_PROGRESS_BARS=1
+          export TRANSFORMERS_VERBOSITY=error
+          export BITSANDBYTES_NOWELCOME=1
           python -u scripts/evaluate_perplexity.py \
             --models Qwen/Qwen2.5-7B-Instruct,Qwen/Qwen2.5-14B-Instruct,Qwen/Qwen2.5-32B-Instruct \
             --quantizations fp16,nf4,fp4 \
@@ -85,7 +92,9 @@ jobs:
             --batch-size 1 \
             --seed 1337 \
             --device-map cuda \
-            --output-json "${QUALITY_JSON}"
+            --output-json "${QUALITY_JSON}" \
+            > "artifacts/benchmarks/logs/perplexity-${BENCH_DATE}.log" 2>&1
+          tail -n 40 "artifacts/benchmarks/logs/perplexity-${BENCH_DATE}.log"
 
       - name: Validate JSON outputs
         shell: bash
