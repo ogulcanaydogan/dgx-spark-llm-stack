@@ -132,7 +132,9 @@ def main():
 
     import torch
     print(f"GPU: {torch.cuda.get_device_name(0)}")
-    print(f"VRAM: {torch.cuda.get_device_properties(0).total_mem / 1e9:.0f} GB")
+    props = torch.cuda.get_device_properties(0)
+    total_mem = getattr(props, 'total_memory', None) or getattr(props, 'total_mem', 0)
+    print(f"VRAM: {total_mem / 1e9:.0f} GB")
     print(f"PyTorch: {torch.__version__}")
 
     if args.suite:
