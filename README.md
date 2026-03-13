@@ -6,7 +6,9 @@
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://python.org)
 [![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
 
-Complete LLM training & inference stack for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell architecture).
+**PyTorch, Triton, flash-attention, BitsAndBytes** — pre-built wheels and reproducible build scripts for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell, CUDA 13.0, Python 3.12, ARM64).
+
+> Can't `pip install torch` on your DGX Spark? You're in the right place.
 
 ## The Problem
 
