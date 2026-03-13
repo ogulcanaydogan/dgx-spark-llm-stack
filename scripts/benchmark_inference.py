@@ -40,6 +40,8 @@ def normalize_quantization(value: str):
         return "fp16"
     if normalized in {"4bit", "nf4"}:
         return "nf4"
+    if normalized in {"fp4", "4bit-fp4"}:
+        return "fp4"
     if normalized in {"8bit", "int8"}:
         return "int8"
     raise ValueError(f"Unsupported quantization: {value}")
@@ -86,14 +88,14 @@ def benchmark_generation(
 
     load_kwargs = {"device_map": selected_device_map, "torch_dtype": torch.float16}
 
-    if quant_mode == "nf4":
+    if quant_mode in {"nf4", "fp4"}:
         try:
             from transformers import BitsAndBytesConfig
 
             load_kwargs["quantization_config"] = BitsAndBytesConfig(
                 load_in_4bit=True,
                 bnb_4bit_compute_dtype=torch.float16,
-                bnb_4bit_quant_type="nf4",
+                bnb_4bit_quant_type=quant_mode,
             )
         except ImportError:
             print("WARNING: bitsandbytes not available, using FP16")
@@ -202,7 +204,7 @@ def main():
     parser.add_argument("--tokens", type=int, default=128, help="Max new tokens to generate (default: 128)")
     parser.add_argument(
         "--quantization",
-        choices=["none", "fp16", "4bit", "nf4", "8bit", "int8"],
+        choices=["none", "fp16", "4bit", "nf4", "fp4", "8bit", "int8"],
         default="none",
         help="Quantization for single-run mode",
     )
@@ -210,7 +212,7 @@ def main():
         "--quantizations",
         type=str,
         default="",
-        help="Comma-separated quantization list (none/fp16, 4bit/nf4, 8bit/int8)",
+        help="Comma-separated quantization list (none/fp16, 4bit/nf4/fp4, 8bit/int8)",
     )
     parser.add_argument("--runs", type=int, default=3, help="Number of benchmark runs (default: 3)")
     parser.add_argument(

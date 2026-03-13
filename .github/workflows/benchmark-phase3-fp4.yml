@@ -1,0 +1,86 @@
+name: benchmark-phase3-fp4
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-phase3-fp4:
+    name: Run FP4 + perplexity benchmarks on DGX Spark
+    runs-on: [self-hosted, linux, arm64, dgx-spark]
+    timeout-minutes: 720
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set benchmark date
+        shell: bash
+        run: echo "BENCH_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+
+      - name: Prepare isolated benchmark venv
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv .venv-bench-ci
+          source .venv-bench-ci/bin/activate
+          python -m pip install --upgrade pip setuptools wheel
+
+          python -m pip install \
+            transformers \
+            accelerate \
+            datasets \
+            tokenizers \
+            safetensors \
+            peft \
+            trl \
+            sentencepiece \
+            protobuf
+
+          python -m pip install --force-reinstall --no-deps \
+            https://github.com/ogulcanaydogan/dgx-spark-llm-stack/releases/download/v0.1.0/torch-2.9.1a0+gitd38164a-cp312-cp312-linux_aarch64.whl
+          python -m pip install --force-reinstall --no-deps \
+            https://github.com/ogulcanaydogan/dgx-spark-llm-stack/releases/download/v0.1.0/bitsandbytes-0.49.0-cp312-cp312-linux_aarch64.whl
+
+      - name: Run inference matrix (7B/14B/32B x FP16/NF4/FP4)
+        shell: bash
+        run: |
+          set -euo pipefail
+          source .venv-bench-ci/bin/activate
+          export HF_HUB_DISABLE_PROGRESS_BARS=1
+          python -u scripts/benchmark_inference.py \
+            --models Qwen/Qwen2.5-7B-Instruct,Qwen/Qwen2.5-14B-Instruct,Qwen/Qwen2.5-32B-Instruct \
+            --quantizations fp16,nf4,fp4 \
+            --tokens 256 \
+            --runs 5 \
+            --device-map cuda \
+            --output-json "artifacts/benchmarks/inference-fp4-${BENCH_DATE}.json"
+
+      - name: Run perplexity matrix (WikiText-2 validation)
+        shell: bash
+        run: |
+          set -euo pipefail
+          source .venv-bench-ci/bin/activate
+          export HF_HUB_DISABLE_PROGRESS_BARS=1
+          python -u scripts/evaluate_perplexity.py \
+            --models Qwen/Qwen2.5-7B-Instruct,Qwen/Qwen2.5-14B-Instruct,Qwen/Qwen2.5-32B-Instruct \
+            --quantizations fp16,nf4,fp4 \
+            --dataset wikitext \
+            --dataset-config wikitext-2-raw-v1 \
+            --split validation \
+            --subset-size 256 \
+            --max-length 512 \
+            --batch-size 1 \
+            --seed 1337 \
+            --device-map cuda \
+            --output-json "artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-${BENCH_DATE}.json"
+
+      - name: Upload FP4 benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-fp4-${{ env.BENCH_DATE }}
+          path: |
+            artifacts/benchmarks/inference-fp4-*.json
+            artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-*.json
