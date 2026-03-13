@@ -20,9 +20,9 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 
 > Compile wheels on DGX Spark, publish to GitHub Releases, add CI testing.
 
-- [ ] Build PyTorch 2.9.1 wheel on DGX Spark (sm_121, CUDA 13.0, ARM64)
-- [ ] Build BitsAndBytes wheel with CUDA 13.0 support
-- [ ] Upload wheels to GitHub Releases with checksums (SHA256)
+- [x] Build PyTorch 2.9.1 wheel on DGX Spark (sm_121, CUDA 13.0, ARM64)
+- [x] Build BitsAndBytes wheel with CUDA 13.0 support
+- [x] Upload wheels to GitHub Releases with checksums (SHA256)
 - [x] Add `install.sh` auto-download from Releases
 - [x] CI workflow: test wheel installation on fresh DGX Spark
 - [x] CI workflow: run `verify_install.py` after install
