@@ -1,0 +1,128 @@
+# DGX Spark LLM Stack
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-ARM64-green.svg)]()
+[![CUDA](https://img.shields.io/badge/CUDA-13.0-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://python.org)
+[![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
+
+Complete LLM training & inference stack for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell architecture).
+
+## The Problem
+
+DGX Spark ships with GB10 — a Blackwell GPU with compute capability `sm_121`. Most ML frameworks don't officially support this architecture yet:
+
+- **PyTorch**: Official wheels max out at `sm_120`, emit warnings on `sm_121`
+- **Triton**: `ptxas` doesn't recognize `sm_121a`, builds fail
+- **flash-attention**: No `sm_121` kernels, compilation fails
+- **vLLM**: Requires Docker or source builds for Blackwell
+- **TransformerEngine**: MXFP8 broken on this arch
+
+This repo provides **build scripts, pre-built wheels, compatibility info, and benchmarks** so you can run a full LLM stack on your DGX Spark without fighting the toolchain.
+
+## Quick Start
+
+```bash
+git clone https://github.com/ogulcanaydogan/dgx-spark-llm-stack.git
+cd dgx-spark-llm-stack
+./install.sh
+```
+
+This downloads pre-built wheels from GitHub Releases and installs the full stack. After installation, it runs verification automatically.
+
+## Compatibility Matrix
+
+| Library | Version | sm_121 Status | Notes |
+|---------|---------|---------------|-------|
+| PyTorch | 2.9.1 | ⚠️ Warning, works | Official max sm_120; our wheel targets sm_121 |
+| Triton | 3.5.0 | ❌ Broken | ptxas doesn't recognize sm_121a |
+| flash-attention | 2.7+ | ❌ Not supported | Use SDPA fallback (see docs) |
+| BitsAndBytes | 0.49+ | ✅ Works | FP4/NF4 quantization tested |
+| vLLM | 0.8+ | ⚠️ Docker only | Build from source or use NGC container |
+| llama.cpp | Latest | ✅ Works well | Best option for inference |
+| TensorRT-LLM | 0.9+ | ⚠️ Partial | Attention sinks broken |
+| TransformerEngine | - | ❌ Broken | MXFP8 training unsupported |
+| Unsloth | Latest | ✅ Works | Recommended for fine-tuning |
+| transformers | 4.48+ | ✅ Works | Standard HF stack |
+| PEFT / LoRA | Latest | ✅ Works | QLoRA with BitsAndBytes OK |
+| TRL | Latest | ✅ Works | SFT, DPO, ORPO all work |
+
+Full details: [COMPATIBILITY.md](COMPATIBILITY.md)
+
+## Pre-built Wheels
+
+Check [GitHub Releases](https://github.com/ogulcanaydogan/dgx-spark-llm-stack/releases) for pre-built wheels:
+
+- `torch-2.9.1+cu130-cp312-cp312-linux_aarch64.whl`
+- `bitsandbytes-0.49.0+cu130-cp312-cp312-linux_aarch64.whl`
+
+These are built on DGX Spark with CUDA 13.0, Python 3.12, GCC 13.3.
+
+## Build from Source
+
+If you prefer to build everything yourself:
+
+```bash
+# Set up environment
+source configs/env.sh
+
+# Build all components (~6 hours total)
+./build/build_all.sh
+
+# Or build individually
+./build/build_pytorch.sh      # ~4 hours
+./build/build_triton.sh       # ~30 min
+./build/build_flash_attn.sh   # ~20 min
+./build/build_bitsandbytes.sh # ~10 min
+```
+
+## Verification
+
+```bash
+python scripts/verify_install.py
+```
+
+Sample output:
+```
+GPU: NVIDIA GB10 (128 GB) — Compute Capability: 12.1
+CUDA: 13.0 — Driver: 570.x
+PyTorch: 2.9.1+cu130 — CUDA available: ✓
+Libraries: transformers ✓ | peft ✓ | trl ✓ | bitsandbytes ✓
+MatMul test (4096×4096): PASSED — 2.3 TFLOPS
+```
+
+## Benchmarks
+
+```bash
+python scripts/benchmark_inference.py   # Token generation speed
+python scripts/benchmark_training.py    # Fine-tuning throughput
+```
+
+## Documentation
+
+- [Quick Start Guide](docs/quickstart.md) — Get running in 5 minutes
+- [Training Guide](docs/training_guide.md) — Fine-tune LLMs on DGX Spark
+- [Troubleshooting](docs/troubleshooting.md) — Known issues and solutions
+
+## System Specs (DGX Spark)
+
+| Component | Spec |
+|-----------|------|
+| GPU | NVIDIA GB10 (Blackwell, sm_121) |
+| VRAM | 128 GB unified memory |
+| CPU | 20-core ARM64 (Grace) |
+| RAM | 121 GB |
+| Storage | 1.9 TB NVMe |
+| CUDA | 13.0 |
+| GCC | 13.3 |
+| CMake | 3.28 |
+| Python | 3.12 |
+
+## Acknowledgments
+
+- [Emre Yüz](https://github.com/emreyuz) and his [pytorch-gb10](https://github.com/emreyuz/pytorch-gb10) repo for pioneering PyTorch on GB10
+- NVIDIA for DGX Spark developer documentation
+
+## License
+
+[Apache License 2.0](LICENSE)
