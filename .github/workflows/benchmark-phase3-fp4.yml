@@ -3,6 +3,10 @@ name: benchmark-phase3-fp4
 on:
   workflow_dispatch:
 
+concurrency:
+  group: benchmark-phase3-fp4-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -18,7 +22,13 @@ jobs:
 
       - name: Set benchmark date
         shell: bash
-        run: echo "BENCH_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+        run: |
+          set -euo pipefail
+          BENCH_DATE="$(date -u +%F)"
+          echo "BENCH_DATE=${BENCH_DATE}" >> "$GITHUB_ENV"
+          echo "INFERENCE_JSON=artifacts/benchmarks/inference-fp4-${BENCH_DATE}.json" >> "$GITHUB_ENV"
+          echo "QUALITY_JSON=artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-${BENCH_DATE}.json" >> "$GITHUB_ENV"
+          echo "BENCH_ARCHIVE=artifacts/benchmarks/phase3-fp4-${BENCH_DATE}.tar.gz" >> "$GITHUB_ENV"
 
       - name: Prepare isolated benchmark venv
         shell: bash
@@ -56,7 +66,7 @@ jobs:
             --tokens 256 \
             --runs 5 \
             --device-map cuda \
-            --output-json "artifacts/benchmarks/inference-fp4-${BENCH_DATE}.json"
+            --output-json "${INFERENCE_JSON}"
 
       - name: Run perplexity matrix (WikiText-2 validation)
         shell: bash
@@ -75,12 +85,29 @@ jobs:
             --batch-size 1 \
             --seed 1337 \
             --device-map cuda \
-            --output-json "artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-${BENCH_DATE}.json"
+            --output-json "${QUALITY_JSON}"
+
+      - name: Validate JSON outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          ls -lh "${INFERENCE_JSON}" "${QUALITY_JSON}"
+          test -s "${INFERENCE_JSON}"
+          test -s "${QUALITY_JSON}"
+          jq -e . "${INFERENCE_JSON}" > /dev/null
+          jq -e . "${QUALITY_JSON}" > /dev/null
+
+      - name: Package benchmark outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -czf "${BENCH_ARCHIVE}" "${INFERENCE_JSON}" "${QUALITY_JSON}"
+          ls -lh "${BENCH_ARCHIVE}"
 
       - name: Upload FP4 benchmark artifacts
         uses: actions/upload-artifact@v4
         with:
           name: phase3-fp4-${{ env.BENCH_DATE }}
-          path: |
-            artifacts/benchmarks/inference-fp4-*.json
-            artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-*.json
+          path: ${{ env.BENCH_ARCHIVE }}
+          if-no-files-found: error
+          retention-days: 14

@@ -89,3 +89,38 @@ git push origin v0.1.0
 ## Installer Integrity Rule
 
 `install.sh` downloads wheel assets from the latest release and requires `SHA256SUMS` when release wheels are present. If checksum verification fails, installation aborts and does not install unverified wheels.
+
+## CI Runner Recovery (Session Conflict / Offline)
+
+Use this when a self-hosted DGX runner gets stuck with a queued run or reports session conflict.
+
+1. Check current runner health:
+
+```bash
+gh api repos/ogulcanaydogan/dgx-spark-llm-stack/actions/runners \
+  --jq '.runners[] | {name,status,busy,labels:[.labels[].name]}'
+```
+
+2. Enforce single-listener principle on the DGX host (keep only one listener process for this repo runner):
+
+```bash
+ssh spark '
+RUNNER_DIR=/home/weezboo/actions-runner-dgx-stack
+pkill -f "$RUNNER_DIR/bin/Runner.Worker" || true
+pkill -f "$RUNNER_DIR/bin/Runner.Listener run" || true
+pkill -f "$RUNNER_DIR/run-helper.sh" || true
+pkill -f "$RUNNER_DIR/run.sh" || true
+sleep 2
+cd "$RUNNER_DIR"
+nohup ./run.sh > "$RUNNER_DIR/runner-restart.log" 2>&1 &
+'
+```
+
+3. Re-check runner state until it is `online` and `busy=false`:
+
+```bash
+gh api repos/ogulcanaydogan/dgx-spark-llm-stack/actions/runners \
+  --jq '.runners[] | {name,status,busy}'
+```
+
+4. If a benchmark run is still stuck after restart, cancel that run and re-trigger from `workflow_dispatch`.
