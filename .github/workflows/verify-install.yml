@@ -1,0 +1,48 @@
+name: verify-install
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  fresh-install-check:
+    name: Fresh install + verify_install.py on DGX Spark
+    if: github.event_name != 'release' || github.event.release.prerelease == false
+    runs-on: [self-hosted, linux, arm64, dgx-spark]
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create clean virtual environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv .venv-ci
+          source .venv-ci/bin/activate
+          python -m pip install --upgrade pip
+
+      - name: Run installer against latest release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          source .venv-ci/bin/activate
+          ./install.sh
+
+      - name: Re-run verification and fail on any failed checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          source .venv-ci/bin/activate
+          python3 scripts/verify_install.py | tee verify_install.log
+          if grep -q "✗" verify_install.log; then
+            echo "verify_install.py reported failed checks." >&2
+            exit 1
+          fi

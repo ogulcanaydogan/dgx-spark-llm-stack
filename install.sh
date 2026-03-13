@@ -20,6 +20,61 @@ info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+command_exists() {
+    command -v "$1" &>/dev/null
+}
+
+fetch_latest_release_assets() {
+    local token
+    local tmp_json
+    local api_url
+    token="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+    api_url="https://api.github.com/repos/${REPO}/releases/${RELEASE_TAG}"
+    tmp_json="$(mktemp)"
+
+    if ! command_exists curl; then
+        warn "curl is not available; cannot fetch release assets."
+        rm -f "${tmp_json}"
+        return 1
+    fi
+
+    if [[ -n "${token}" ]]; then
+        curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${token}" \
+            "${api_url}" -o "${tmp_json}" || {
+                rm -f "${tmp_json}"
+                return 1
+            }
+    else
+        curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            "${api_url}" -o "${tmp_json}" || {
+                rm -f "${tmp_json}"
+                return 1
+            }
+    fi
+
+    python3 - "${tmp_json}" <<'PY'
+import json
+import sys
+
+path = sys.argv[1]
+with open(path, "r", encoding="utf-8") as fh:
+    data = json.load(fh)
+
+for asset in data.get("assets", []):
+    name = asset.get("name", "")
+    url = asset.get("browser_download_url", "")
+    if name and url:
+        print(f"{name}|{url}")
+PY
+
+    rm -f "${tmp_json}"
+}
+
 # ── Pre-flight checks ────────────────────────────────────────────────────────
 
 check_system() {
@@ -58,40 +113,73 @@ check_system() {
 # ── Install from pre-built wheels ─────────────────────────────────────────────
 
 install_from_wheels() {
-    info "Downloading pre-built wheels from GitHub Releases..."
+    info "Attempting install from latest GitHub Release assets..."
     mkdir -p "${WHEEL_DIR}"
+    rm -f "${WHEEL_DIR}"/*.whl "${WHEEL_DIR}/SHA256SUMS" 2>/dev/null || true
 
-    # Get the latest release asset URLs
-    ASSETS=$(gh release view "${RELEASE_TAG}" --repo "${REPO}" --json assets -q '.assets[].url' 2>/dev/null || true)
+    # Query latest release assets through GitHub API.
+    local release_assets
+    release_assets="$(fetch_latest_release_assets || true)"
 
-    if [[ -z "${ASSETS}" ]]; then
+    if [[ -z "${release_assets}" ]]; then
         warn "No pre-built wheels found in GitHub Releases."
         warn "Falling back to pip install (without custom wheels)."
         install_pip_packages
         return
     fi
 
-    # Download all wheel files
-    while IFS= read -r url; do
-        filename=$(basename "${url}")
-        if [[ "${filename}" == *.whl ]]; then
+    # Download wheel assets and checksum manifest.
+    local downloaded_any=0
+    while IFS='|' read -r filename url; do
+        [[ -z "${filename}" ]] && continue
+        if [[ "${filename}" == *.whl || "${filename}" == "SHA256SUMS" ]]; then
+            downloaded_any=1
             info "Downloading ${filename}..."
-            gh release download "${RELEASE_TAG}" --repo "${REPO}" \
-                --pattern "${filename}" --dir "${WHEEL_DIR}" --clobber
+            curl -fsSL --retry 3 --retry-delay 2 \
+                "${url}" -o "${WHEEL_DIR}/${filename}"
         fi
-    done <<< "${ASSETS}"
+    done <<< "${release_assets}"
+
+    if [[ "${downloaded_any}" -eq 0 ]]; then
+        warn "Latest release has no wheel assets."
+        warn "Falling back to pip install (without custom wheels)."
+        install_pip_packages
+        return
+    fi
+
+    shopt -s nullglob
+    local wheels=("${WHEEL_DIR}"/*.whl)
+    shopt -u nullglob
+
+    if [[ "${#wheels[@]}" -eq 0 ]]; then
+        warn "No wheel files were downloaded from latest release."
+        warn "Falling back to pip install (without custom wheels)."
+        install_pip_packages
+        return
+    fi
+
+    # Mandatory integrity check when release wheel assets are present.
+    if [[ ! -f "${WHEEL_DIR}/SHA256SUMS" ]]; then
+        error "Release wheels found but SHA256SUMS is missing. Refusing to install unverified artifacts."
+    fi
+
+    info "Verifying wheel checksums..."
+    (
+        cd "${WHEEL_DIR}"
+        sha256sum -c SHA256SUMS
+    ) || error "Checksum verification failed for release assets."
 
     # Install wheels in dependency order
     info "Installing wheels..."
 
     # PyTorch first
-    TORCH_WHEEL=$(find "${WHEEL_DIR}" -name "torch-*.whl" 2>/dev/null | head -1)
+    TORCH_WHEEL=$(find "${WHEEL_DIR}" -maxdepth 1 -name "torch-*.whl" 2>/dev/null | head -1)
     if [[ -n "${TORCH_WHEEL}" ]]; then
         pip install "${TORCH_WHEEL}" --force-reinstall
     fi
 
     # Then other custom wheels
-    for wheel in "${WHEEL_DIR}"/*.whl; do
+    for wheel in "${wheels[@]}"; do
         [[ "${wheel}" == *"torch-"* ]] && continue
         pip install "${wheel}" --force-reinstall
     done

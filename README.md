@@ -57,8 +57,10 @@ Check [GitHub Releases](https://github.com/ogulcanaydogan/dgx-spark-llm-stack/re
 
 - `torch-2.9.1+cu130-cp312-cp312-linux_aarch64.whl`
 - `bitsandbytes-0.49.0+cu130-cp312-cp312-linux_aarch64.whl`
+- `SHA256SUMS` (checksum manifest for release artifacts)
 
 These are built on DGX Spark with CUDA 13.0, Python 3.12, GCC 13.3.
+`install.sh` verifies release wheel checksums before installation.
 
 ## Build from Source
 
@@ -105,6 +107,7 @@ python scripts/benchmark_training.py    # Fine-tuning throughput
 - [Quick Start Guide](docs/quickstart.md) — Get running in 5 minutes
 - [Training Guide](docs/training_guide.md) — Fine-tune LLMs on DGX Spark
 - [Troubleshooting](docs/troubleshooting.md) — Known issues and solutions
+- [Reproducible Builds](docs/reproducible-builds.md) — Deterministic wheel build and release flow
 
 ## Roadmap
 

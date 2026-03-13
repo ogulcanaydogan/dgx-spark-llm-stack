@@ -1,0 +1,89 @@
+name: release-wheels
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-wheels-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build torch + bitsandbytes and publish release assets
+    runs-on: [self-hosted, linux, arm64, dgx-spark]
+    timeout-minutes: 480
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Show runner environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          uname -a
+          python3 --version
+          nvcc --version
+          nvidia-smi || true
+
+      - name: Prepare artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist
+
+      - name: Build PyTorch wheel
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash build/build_pytorch.sh
+
+      - name: Install custom PyTorch wheel for downstream builds
+        shell: bash
+        run: |
+          set -euo pipefail
+          TORCH_WHEEL="$(find dist -maxdepth 1 -name 'torch-*.whl' | head -1)"
+          if [[ -z "${TORCH_WHEEL}" ]]; then
+            echo "No torch wheel generated." >&2
+            exit 1
+          fi
+          python3 -m pip install --force-reinstall "${TORCH_WHEEL}"
+
+      - name: Build BitsAndBytes wheel
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash build/build_bitsandbytes.sh
+
+      - name: Generate SHA256 checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          wheels=(dist/*.whl)
+          if (( ${#wheels[@]} == 0 )); then
+            echo "No wheel artifacts generated." >&2
+            exit 1
+          fi
+          (cd dist && sha256sum *.whl > SHA256SUMS)
+          cat dist/SHA256SUMS
+
+      - name: Publish GitHub Release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          make_latest: true
+          generate_release_notes: true
+          files: |
+            dist/*.whl
+            dist/SHA256SUMS
