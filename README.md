@@ -7,6 +7,7 @@
 [![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
 [![Benchmark Baseline](https://img.shields.io/badge/Baseline-2026--03--13-0A66C2.svg)]()
 [![Inference 14B NF4](https://img.shields.io/badge/Inference_14B_NF4-18.53_tok%2Fs-0A7D00.svg)]()
+[![Inference 72B NF4](https://img.shields.io/badge/Inference_72B_NF4-3.80_tok%2Fs-8A2BE2.svg)]()
 [![Training 7B LoRA](https://img.shields.io/badge/Training_7B_LoRA-2.58_samples%2Fs-0057B8.svg)]()
 
 **PyTorch, Triton, flash-attention, BitsAndBytes** — pre-built wheels and reproducible build scripts for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell, CUDA 13.0, Python 3.12, ARM64).
@@ -105,9 +106,10 @@ python scripts/benchmark_inference.py   # Token generation speed
 python scripts/benchmark_training.py    # Fine-tuning throughput
 ```
 
-Phase 3 baseline results (Qwen 7B/14B, FP16/NF4, LoRA/QLoRA):
+Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, LoRA/QLoRA training):
 - [docs/benchmarks.md](docs/benchmarks.md)
 - `artifacts/benchmarks/phase3-baseline-2026-03-13.json`
+- `artifacts/benchmarks/inference-extended-32b-72b-2026-03-13.json`
 
 ## Documentation
 

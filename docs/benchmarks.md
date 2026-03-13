@@ -1,6 +1,6 @@
-# Benchmarks (Phase 3 Baseline)
+# Benchmarks (Phase 3)
 
-This document captures the first **Phase 3 baseline** benchmark run for DGX Spark.
+This document captures the Phase 3 benchmark runs for DGX Spark.
 
 ## Baseline Snapshot
 
@@ -8,12 +8,12 @@ This document captures the first **Phase 3 baseline** benchmark run for DGX Spar
 - Host: DGX Spark (`NVIDIA GB10`, ARM64)
 - PyTorch: `2.9.1a0+gitd38164a` (custom wheel)
 - CUDA runtime: `13.0`
-- Models: `Qwen/Qwen2.5-7B-Instruct`, `Qwen/Qwen2.5-14B-Instruct`
+- Models: `Qwen/Qwen2.5-7B-Instruct`, `Qwen/Qwen2.5-14B-Instruct`, `Qwen/Qwen2.5-32B-Instruct`, `Qwen/Qwen2.5-72B-Instruct`
 
 ## Methodology
 
 Inference setup:
-- Matrix: `7B, 14B` x `FP16, NF4`
+- Matrix: `7B, 14B` x `FP16, NF4` plus `32B` x `FP16, NF4` and `72B` x `NF4`
 - Prompt: fixed single prompt in script
 - Generation length: `256` new tokens
 - Timed runs per row: `5`
@@ -40,11 +40,31 @@ python scripts/benchmark_training.py \
   --batch-size 1 \
   --seq-length 512 \
   --output-json artifacts/benchmarks/training-baseline-2026-03-13.json
+
+python scripts/benchmark_inference.py \
+  --models Qwen/Qwen2.5-32B-Instruct \
+  --quantizations fp16,nf4 \
+  --tokens 256 \
+  --runs 5 \
+  --device-map cuda \
+  --output-json artifacts/benchmarks/inference-32b-2026-03-13.json
+
+python scripts/benchmark_inference.py \
+  --models Qwen/Qwen2.5-72B-Instruct \
+  --quantizations nf4 \
+  --tokens 256 \
+  --runs 5 \
+  --device-map cuda \
+  --output-json artifacts/benchmarks/inference-72b-nf4-2026-03-13.json
 ```
 
 Combined artifact:
 
 `artifacts/benchmarks/phase3-baseline-2026-03-13.json`
+
+Extended inference artifact:
+
+`artifacts/benchmarks/inference-extended-32b-72b-2026-03-13.json`
 
 ## Results
 
@@ -56,6 +76,9 @@ Combined artifact:
 | Qwen2.5-7B-Instruct | NF4 | 35.92 | 5.87 | 5.78 |
 | Qwen2.5-14B-Instruct | FP16 | 7.49 | 33.22 | 1284.27 |
 | Qwen2.5-14B-Instruct | NF4 | 18.53 | 14.27 | 8.13 |
+| Qwen2.5-32B-Instruct | FP16 | 3.46 | 65.53 | 31.71 |
+| Qwen2.5-32B-Instruct | NF4 | 9.73 | 20.71 | 22.14 |
+| Qwen2.5-72B-Instruct | NF4 | 3.80 | 44.51 | 2750.27 |
 
 ### Training Throughput
 
@@ -68,12 +91,10 @@ Combined artifact:
 
 ## Notes and Limits
 
-- This baseline does **not** include `32B`/`72B` model runs yet.
 - Quantization comparison currently covers `FP16` vs `NF4`; `FP4` is still pending.
 - First-time model downloads dominate load time. Throughput numbers are from timed generation/training loops, not download duration.
 
 ## Next Run Targets
 
-- Extend inference matrix to include `32B` and `72B`.
 - Add `FP4` quantization row and quality/performance comparison.
 - Add cross-hardware comparison table (DGX Spark vs RTX 4090 vs A100 where available).
