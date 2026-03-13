@@ -5,6 +5,9 @@
 [![CUDA](https://img.shields.io/badge/CUDA-13.0-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://python.org)
 [![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
+[![Benchmark Baseline](https://img.shields.io/badge/Baseline-2026--03--13-0A66C2.svg)]()
+[![Inference 14B NF4](https://img.shields.io/badge/Inference_14B_NF4-18.53_tok%2Fs-0A7D00.svg)]()
+[![Training 7B LoRA](https://img.shields.io/badge/Training_7B_LoRA-2.58_samples%2Fs-0057B8.svg)]()
 
 **PyTorch, Triton, flash-attention, BitsAndBytes** — pre-built wheels and reproducible build scripts for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell, CUDA 13.0, Python 3.12, ARM64).
 
@@ -102,12 +105,17 @@ python scripts/benchmark_inference.py   # Token generation speed
 python scripts/benchmark_training.py    # Fine-tuning throughput
 ```
 
+Phase 3 baseline results (Qwen 7B/14B, FP16/NF4, LoRA/QLoRA):
+- [docs/benchmarks.md](docs/benchmarks.md)
+- `artifacts/benchmarks/phase3-baseline-2026-03-13.json`
+
 ## Documentation
 
 - [Quick Start Guide](docs/quickstart.md) — Get running in 5 minutes
 - [Training Guide](docs/training_guide.md) — Fine-tune LLMs on DGX Spark
 - [Troubleshooting](docs/troubleshooting.md) — Known issues and solutions
 - [Reproducible Builds](docs/reproducible-builds.md) — Deterministic wheel build and release flow
+- [Benchmarks](docs/benchmarks.md) — Phase 3 baseline numbers and methodology
 
 ## Roadmap
 
@@ -116,8 +124,8 @@ This project is under active development. Here's what's next:
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 1. Foundation | Repo structure, build scripts, docs, compat matrix | ✅ Done |
-| 2. Pre-built Wheels | Compile and publish wheels to GitHub Releases | 🔄 In Progress |
-| 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | ⬚ Planned |
+| 2. Pre-built Wheels | Compile and publish wheels to GitHub Releases | ✅ Done |
+| 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | 🔄 In Progress |
 | 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ⬚ Planned |
 | 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | ⬚ Planned |
 | 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | ⬚ Planned |

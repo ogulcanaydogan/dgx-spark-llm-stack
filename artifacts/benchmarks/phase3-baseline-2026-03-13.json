@@ -1,0 +1,178 @@
+{
+  "baseline": "phase3-2026-03-13",
+  "config": {
+    "inference": {
+      "runs": 5,
+      "tokens": 256
+    },
+    "training": {
+      "batch_size": 1,
+      "seq_length": 512,
+      "steps": 100
+    }
+  },
+  "environment": {
+    "inference": {
+      "cuda_version": "13.0",
+      "generated_at_utc": "2026-03-13T09:43:27.308458+00:00",
+      "gpu_memory_gb": 130.7,
+      "gpu_name": "NVIDIA GB10",
+      "python_version": "3.12.3",
+      "torch_version": "2.9.1a0+gitd38164a"
+    },
+    "training": {
+      "cuda_version": "13.0",
+      "generated_at_utc": "2026-03-13T10:38:05.789871+00:00",
+      "gpu_memory_gb": 130.7,
+      "gpu_name": "NVIDIA GB10",
+      "python_version": "3.12.3",
+      "torch_version": "2.9.1a0+gitd38164a"
+    }
+  },
+  "failures": {
+    "inference": [],
+    "training": []
+  },
+  "generated_at_utc": "2026-03-13T10:47:24.409319+00:00",
+  "inference_results": [
+    {
+      "avg_time_s": 19.758,
+      "avg_tokens": 256.0,
+      "cuda_version": "13.0",
+      "gpu_memory_gb": 15.23,
+      "gpu_name": "NVIDIA GB10",
+      "max_new_tokens": 256,
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "model_load_time_s": 630.801,
+      "num_runs": 5,
+      "quantization": "fp16",
+      "tokens_per_sec": 12.96,
+      "torch_version": "2.9.1a0+gitd38164a",
+      "ttft_ms_rough": 76.99
+    },
+    {
+      "avg_time_s": 7.127,
+      "avg_tokens": 256.0,
+      "cuda_version": "13.0",
+      "gpu_memory_gb": 5.87,
+      "gpu_name": "NVIDIA GB10",
+      "max_new_tokens": 256,
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "model_load_time_s": 5.78,
+      "num_runs": 5,
+      "quantization": "nf4",
+      "tokens_per_sec": 35.92,
+      "torch_version": "2.9.1a0+gitd38164a",
+      "ttft_ms_rough": 27.85
+    },
+    {
+      "avg_time_s": 34.193,
+      "avg_tokens": 256.0,
+      "cuda_version": "13.0",
+      "gpu_memory_gb": 33.22,
+      "gpu_name": "NVIDIA GB10",
+      "max_new_tokens": 256,
+      "model": "Qwen/Qwen2.5-14B-Instruct",
+      "model_load_time_s": 1284.273,
+      "num_runs": 5,
+      "quantization": "fp16",
+      "tokens_per_sec": 7.49,
+      "torch_version": "2.9.1a0+gitd38164a",
+      "ttft_ms_rough": 133.28
+    },
+    {
+      "avg_time_s": 13.817,
+      "avg_tokens": 256.0,
+      "cuda_version": "13.0",
+      "gpu_memory_gb": 14.27,
+      "gpu_name": "NVIDIA GB10",
+      "max_new_tokens": 256,
+      "model": "Qwen/Qwen2.5-14B-Instruct",
+      "model_load_time_s": 8.128,
+      "num_runs": 5,
+      "quantization": "nf4",
+      "tokens_per_sec": 18.53,
+      "torch_version": "2.9.1a0+gitd38164a",
+      "ttft_ms_rough": 53.9
+    }
+  ],
+  "models": [
+    "Qwen/Qwen2.5-7B-Instruct",
+    "Qwen/Qwen2.5-14B-Instruct"
+  ],
+  "quantizations": [
+    "fp16",
+    "nf4"
+  ],
+  "schema_version": "1.0",
+  "training_methods": [
+    "lora",
+    "qlora"
+  ],
+  "training_results": [
+    {
+      "batch_size": 1,
+      "cuda_version": "13.0",
+      "final_loss": 9e-06,
+      "gpu_name": "NVIDIA GB10",
+      "method": "lora",
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "model_load_time_s": 5.383,
+      "model_memory_gb": 15.27,
+      "num_steps": 100,
+      "peak_memory_gb": 19.83,
+      "samples_per_sec": 2.5751,
+      "seq_length": 512,
+      "tokens_per_sec": 1318.44,
+      "torch_version": "2.9.1a0+gitd38164a"
+    },
+    {
+      "batch_size": 1,
+      "cuda_version": "13.0",
+      "final_loss": 1.6e-05,
+      "gpu_name": "NVIDIA GB10",
+      "method": "qlora",
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "model_load_time_s": 4.433,
+      "model_memory_gb": 8.1,
+      "num_steps": 100,
+      "peak_memory_gb": 9.64,
+      "samples_per_sec": 0.8899,
+      "seq_length": 512,
+      "tokens_per_sec": 455.64,
+      "torch_version": "2.9.1a0+gitd38164a"
+    },
+    {
+      "batch_size": 1,
+      "cuda_version": "13.0",
+      "final_loss": 1.3e-05,
+      "gpu_name": "NVIDIA GB10",
+      "method": "lora",
+      "model": "Qwen/Qwen2.5-14B-Instruct",
+      "model_load_time_s": 7.694,
+      "model_memory_gb": 33.34,
+      "num_steps": 100,
+      "peak_memory_gb": 40.87,
+      "samples_per_sec": 1.171,
+      "seq_length": 512,
+      "tokens_per_sec": 599.56,
+      "torch_version": "2.9.1a0+gitd38164a"
+    },
+    {
+      "batch_size": 1,
+      "cuda_version": "13.0",
+      "final_loss": 7e-06,
+      "gpu_name": "NVIDIA GB10",
+      "method": "qlora",
+      "model": "Qwen/Qwen2.5-14B-Instruct",
+      "model_load_time_s": 6.941,
+      "model_memory_gb": 13.82,
+      "num_steps": 100,
+      "peak_memory_gb": 15.78,
+      "samples_per_sec": 0.4065,
+      "seq_length": 512,
+      "tokens_per_sec": 208.13,
+      "torch_version": "2.9.1a0+gitd38164a"
+    }
+  ]
+}
