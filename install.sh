@@ -175,13 +175,13 @@ install_from_wheels() {
     # PyTorch first
     TORCH_WHEEL=$(find "${WHEEL_DIR}" -maxdepth 1 -name "torch-*.whl" 2>/dev/null | head -1)
     if [[ -n "${TORCH_WHEEL}" ]]; then
-        pip install "${TORCH_WHEEL}" --force-reinstall
+        pip install "${TORCH_WHEEL}" --force-reinstall --no-deps
     fi
 
     # Then other custom wheels
     for wheel in "${wheels[@]}"; do
         [[ "${wheel}" == *"torch-"* ]] && continue
-        pip install "${wheel}" --force-reinstall
+        pip install "${wheel}" --force-reinstall --no-deps
     done
 
     # Install remaining packages from PyPI
