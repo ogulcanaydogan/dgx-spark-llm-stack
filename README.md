@@ -6,7 +6,8 @@
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://python.org)
 [![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
 [![Benchmark Baseline](https://img.shields.io/badge/Baseline-2026--03--13-0A66C2.svg)]()
-[![Inference 14B NF4](https://img.shields.io/badge/Inference_14B_NF4-18.53_tok%2Fs-0A7D00.svg)]()
+[![Inference 14B NF4](https://img.shields.io/badge/Inference_14B_NF4-18.91_tok%2Fs-0A7D00.svg)]()
+[![Inference 32B FP4](https://img.shields.io/badge/Inference_32B_FP4-9.79_tok%2Fs-006D77.svg)]()
 [![Inference 72B NF4](https://img.shields.io/badge/Inference_72B_NF4-3.80_tok%2Fs-8A2BE2.svg)]()
 [![Training 7B LoRA](https://img.shields.io/badge/Training_7B_LoRA-2.58_samples%2Fs-0057B8.svg)]()
 
@@ -104,12 +105,15 @@ MatMul test (4096×4096): PASSED — 2.3 TFLOPS
 ```bash
 python scripts/benchmark_inference.py   # Token generation speed
 python scripts/benchmark_training.py    # Fine-tuning throughput
+python scripts/evaluate_perplexity.py   # FP16/NF4/FP4 quality (perplexity)
 ```
 
-Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, LoRA/QLoRA training):
+Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, LoRA/QLoRA training):
 - [docs/benchmarks.md](docs/benchmarks.md)
 - `artifacts/benchmarks/phase3-baseline-2026-03-13.json`
 - `artifacts/benchmarks/inference-extended-32b-72b-2026-03-13.json`
+- `artifacts/benchmarks/inference-fp4-2026-03-13.json`
+- `artifacts/benchmarks/quality-ppl-fp16-nf4-fp4-2026-03-13.json`
 
 ## Documentation
 
@@ -127,7 +131,7 @@ This project is under active development. Here's what's next:
 |-------|-------|--------|
 | 1. Foundation | Repo structure, build scripts, docs, compat matrix | ✅ Done |
 | 2. Pre-built Wheels | Compile and publish wheels to GitHub Releases | ✅ Done |
-| 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | 🔄 In Progress |
+| 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | ✅ Done |
 | 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ⬚ Planned |
 | 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | ⬚ Planned |
 | 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | ⬚ Planned |

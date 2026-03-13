@@ -31,13 +31,13 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 ## Phase 3 — Benchmarks & Validation
 
 > Real benchmark results with numbers — inference speed, training throughput, model-specific tables.
-> Baseline + inference extension published on 2026-03-13 for Qwen 7B/14B/32B/72B (FP16 + NF4 where applicable). FP4 and cross-hardware comparison are pending.
+> Baseline + FP4/quality + cross-hardware snapshot published on 2026-03-13 for Qwen 7B/14B/32B/72B.
 
 - [x] Inference benchmarks: tok/s across model sizes (7B, 14B, 32B, 72B)
 - [x] Training benchmarks: SFT throughput (samples/sec) for LoRA and QLoRA
 - [x] Memory usage profiling per model size
-- [ ] Comparison table: DGX Spark vs. RTX 4090 vs. A100 (where applicable)
-- [ ] Quantization benchmarks: FP16 vs. NF4 vs. FP4 quality and speed
+- [x] Comparison table: DGX Spark vs. RTX 4090 vs. A100 (where applicable)
+- [x] Quantization benchmarks: FP16 vs. NF4 vs. FP4 quality and speed
 - [x] Publish results in `docs/benchmarks.md` with methodology
 - [x] Add benchmark badges to README
 
@@ -84,7 +84,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - 🔄 In progress
 - ⬚ Not started
 
-**Current Phase: 3 — Benchmarks & Validation**
+**Current Phase: 4 — Community & Ecosystem**
 
 ## How to Contribute
 
