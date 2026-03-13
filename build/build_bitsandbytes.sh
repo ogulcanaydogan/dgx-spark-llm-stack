@@ -49,6 +49,7 @@ info "Building CUDA kernels..."
 # BitsAndBytes uses cmake for CUDA kernel compilation
 cmake -B build \
     -DCOMPUTE_BACKEND=cuda \
+    -DCOMPUTE_CAPABILITY="121" \
     -DCMAKE_CUDA_ARCHITECTURES="121" \
     -DCUDA_TOOLKIT_ROOT_DIR="${CUDA_HOME}" \
     -DCMAKE_BUILD_TYPE=Release
