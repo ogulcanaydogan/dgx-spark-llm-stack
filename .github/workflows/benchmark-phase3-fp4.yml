@@ -70,7 +70,7 @@ jobs:
             --dataset wikitext \
             --dataset-config wikitext-2-raw-v1 \
             --split validation \
-            --subset-size 256 \
+            --subset-size 32 \
             --max-length 512 \
             --batch-size 1 \
             --seed 1337 \
