@@ -106,6 +106,29 @@ python scripts/benchmark_training.py    # Fine-tuning throughput
 - [Training Guide](docs/training_guide.md) — Fine-tune LLMs on DGX Spark
 - [Troubleshooting](docs/troubleshooting.md) — Known issues and solutions
 
+## Roadmap
+
+This project is under active development. Here's what's next:
+
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 1. Foundation | Repo structure, build scripts, docs, compat matrix | ✅ Done |
+| 2. Pre-built Wheels | Compile and publish wheels to GitHub Releases | 🔄 In Progress |
+| 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | ⬚ Planned |
+| 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ⬚ Planned |
+| 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | ⬚ Planned |
+| 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | ⬚ Planned |
+
+Full details with task checklists: **[ROADMAP.md](ROADMAP.md)**
+
+## Contributing
+
+Contributions are welcome! Whether it's bug reports, build fixes, benchmark results, or documentation improvements:
+
+1. Check the [Roadmap](ROADMAP.md) for open tasks
+2. Open an issue to discuss your idea
+3. Submit a PR — one feature/fix per PR, clear commit messages
+
 ## System Specs (DGX Spark)
 
 | Component | Spec |
