@@ -11,6 +11,7 @@ source "${SCRIPT_DIR}/../configs/env.sh"
 
 PYTORCH_VERSION="${PYTORCH_VERSION:-v2.9.1}"
 BUILD_DIR="${BUILD_DIR:-/tmp/pytorch-build}"
+FORCE_REBUILD_PYTORCH="${FORCE_REBUILD_PYTORCH:-0}"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -36,6 +37,22 @@ info "Python: ${PYTHON_VERSION}"
 info "CUDA: $(nvcc --version | grep release | awk '{print $6}' | tr -d ',')"
 info "Target arch: ${TORCH_CUDA_ARCH_LIST}"
 info "Parallel jobs: ${MAX_JOBS}"
+
+# Reuse an existing wheel from a previous successful build unless explicitly forced.
+if [[ "${FORCE_REBUILD_PYTORCH}" != "1" ]]; then
+    CACHED_WHEEL=$(find "${BUILD_DIR}/pytorch/dist" -maxdepth 1 -name "torch-*.whl" 2>/dev/null | head -1 || true)
+    if [[ -n "${CACHED_WHEEL}" ]]; then
+        info "Using cached PyTorch wheel: ${CACHED_WHEEL}"
+        cp "${CACHED_WHEEL}" "${BUILD_OUTPUT_DIR}/"
+        FINAL_WHEEL="${BUILD_OUTPUT_DIR}/$(basename "${CACHED_WHEEL}")"
+        info "Build complete!"
+        info "Wheel: ${FINAL_WHEEL}"
+        info "Size: $(du -h "${FINAL_WHEEL}" | cut -f1)"
+        info ""
+        info "Install with: pip install ${FINAL_WHEEL}"
+        exit 0
+    fi
+fi
 
 # ── Install build dependencies ────────────────────────────────────────────────
 
