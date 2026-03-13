@@ -60,7 +60,13 @@ def get_env_info():
     }
 
 
-def benchmark_generation(model_name: str, max_new_tokens: int = 128, quantization: str = "none", num_runs: int = 3):
+def benchmark_generation(
+    model_name: str,
+    max_new_tokens: int = 128,
+    quantization: str = "none",
+    num_runs: int = 3,
+    device_map_mode: str = "auto",
+):
     """Benchmark text generation for one model+quantization pair."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -73,7 +79,12 @@ def benchmark_generation(model_name: str, max_new_tokens: int = 128, quantizatio
     print(f"Max new tokens: {max_new_tokens}")
     print(f"{'=' * 60}")
 
-    load_kwargs = {"device_map": "auto", "torch_dtype": torch.float16}
+    if device_map_mode == "cuda":
+        selected_device_map = {"": 0}
+    else:
+        selected_device_map = "auto"
+
+    load_kwargs = {"device_map": selected_device_map, "torch_dtype": torch.float16}
 
     if quant_mode == "nf4":
         try:
@@ -115,7 +126,7 @@ def benchmark_generation(model_name: str, max_new_tokens: int = 128, quantizatio
 
     times = []
     tokens_generated = []
-    for _ in range(num_runs):
+    for index in range(num_runs):
         torch.cuda.synchronize()
         start = time.perf_counter()
         with torch.no_grad():
@@ -126,6 +137,7 @@ def benchmark_generation(model_name: str, max_new_tokens: int = 128, quantizatio
         n_tokens = output.shape[1] - inputs["input_ids"].shape[1]
         times.append(elapsed)
         tokens_generated.append(n_tokens)
+        print(f"  Run {index + 1}/{num_runs}: {elapsed:.2f}s")
 
     avg_time = sum(times) / len(times)
     avg_tokens = sum(tokens_generated) / len(tokens_generated)
@@ -152,6 +164,7 @@ def benchmark_generation(model_name: str, max_new_tokens: int = 128, quantizatio
         "ttft_ms_rough": round(ttft_ms_rough, 2),
         "gpu_memory_gb": round(mem_allocated, 2),
         "model_load_time_s": round(load_time, 3),
+        "device_map_mode": device_map_mode,
     }
 
 
@@ -200,6 +213,12 @@ def main():
         help="Comma-separated quantization list (none/fp16, 4bit/nf4, 8bit/int8)",
     )
     parser.add_argument("--runs", type=int, default=3, help="Number of benchmark runs (default: 3)")
+    parser.add_argument(
+        "--device-map",
+        choices=["auto", "cuda"],
+        default="auto",
+        help="Model placement strategy (default: auto; use cuda to force single-GPU placement)",
+    )
     parser.add_argument("--suite", action="store_true", help="Run legacy benchmark suite with multiple models")
     parser.add_argument(
         "--baseline",
@@ -240,7 +259,7 @@ def main():
             quantizations.append(quantization)
         for model_name, quantization in matrix:
             try:
-                results.append(benchmark_generation(model_name, args.tokens, quantization, args.runs))
+                results.append(benchmark_generation(model_name, args.tokens, quantization, args.runs, args.device_map))
             except Exception as exc:
                 print(f"FAILED: {model_name} ({quantization}): {exc}")
                 failures.append({"model": model_name, "quantization": quantization, "error": str(exc)})
@@ -263,7 +282,7 @@ def main():
     for model_name in models:
         for quantization in quantizations:
             try:
-                result = benchmark_generation(model_name, args.tokens, quantization, args.runs)
+                result = benchmark_generation(model_name, args.tokens, quantization, args.runs, args.device_map)
                 result.update(
                     {
                         "gpu_name": env_info["gpu_name"],
@@ -285,6 +304,7 @@ def main():
         "config": {
             "tokens": args.tokens,
             "runs": args.runs,
+            "device_map": args.device_map,
             "models": models,
             "quantizations": quantizations,
         },

@@ -1,0 +1,75 @@
+name: benchmark-inference-phase3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-inference-extended:
+    name: Run 32B/72B inference benchmarks on DGX Spark
+    runs-on: [self-hosted, linux, arm64, dgx-spark]
+    timeout-minutes: 720
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare isolated benchmark venv
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv .venv-bench-ci
+          source .venv-bench-ci/bin/activate
+          python -m pip install --upgrade pip setuptools wheel
+
+          python -m pip install \
+            transformers \
+            accelerate \
+            datasets \
+            tokenizers \
+            safetensors \
+            peft \
+            trl \
+            sentencepiece \
+            protobuf
+
+          python -m pip install --force-reinstall --no-deps \
+            https://github.com/ogulcanaydogan/dgx-spark-llm-stack/releases/download/v0.1.0/torch-2.9.1a0+gitd38164a-cp312-cp312-linux_aarch64.whl
+          python -m pip install --force-reinstall --no-deps \
+            https://github.com/ogulcanaydogan/dgx-spark-llm-stack/releases/download/v0.1.0/bitsandbytes-0.49.0-cp312-cp312-linux_aarch64.whl
+
+      - name: Run 32B inference (FP16 + NF4)
+        shell: bash
+        run: |
+          set -euo pipefail
+          source .venv-bench-ci/bin/activate
+          export HF_HUB_DISABLE_PROGRESS_BARS=1
+          python -u scripts/benchmark_inference.py \
+            --models Qwen/Qwen2.5-32B-Instruct \
+            --quantizations fp16,nf4 \
+            --tokens 256 \
+            --runs 5 \
+            --device-map cuda \
+            --output-json artifacts/benchmarks/inference-32b-2026-03-13.json
+
+      - name: Run 72B inference (NF4)
+        shell: bash
+        run: |
+          set -euo pipefail
+          source .venv-bench-ci/bin/activate
+          export HF_HUB_DISABLE_PROGRESS_BARS=1
+          python -u scripts/benchmark_inference.py \
+            --models Qwen/Qwen2.5-72B-Instruct \
+            --quantizations nf4 \
+            --tokens 256 \
+            --runs 5 \
+            --device-map cuda \
+            --output-json artifacts/benchmarks/inference-72b-nf4-2026-03-13.json
+
+      - name: Upload inference benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-inference-extended-2026-03-13
+          path: artifacts/benchmarks/*.json
