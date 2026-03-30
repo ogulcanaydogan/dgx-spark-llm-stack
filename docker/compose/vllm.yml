@@ -1,0 +1,36 @@
+services:
+  vllm:
+    container_name: ${VLLM_CONTAINER_NAME:-dgx-spark-vllm-compose}
+    image: ${VLLM_IMAGE:-dgx-spark-vllm-compose:v0.18.0}
+    build:
+      context: ../..
+      dockerfile: docker/vllm/Dockerfile
+      args:
+        NGC_BASE: ${NGC_BASE:-nvcr.io/nvidia/pytorch:25.11-py3}
+        VLLM_REF: ${VLLM_REF:-v0.18.0}
+        XFORMERS_VERSION: ${XFORMERS_VERSION:-0.0.31}
+        XFORMERS_DISABLE_FLASH_ATTN: ${XFORMERS_DISABLE_FLASH_ATTN:-1}
+        XFORMERS_BUILD_JOBS: ${XFORMERS_BUILD_JOBS:-2}
+        TORCH_CUDA_ARCH_LIST: ${TORCH_CUDA_ARCH_LIST:-12.1}
+    gpus: all
+    ipc: host
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    ports:
+      - "${VLLM_HOST_PORT:-8000}:8000"
+    environment:
+      VLLM_MODEL: ${VLLM_MODEL:-Qwen/Qwen2.5-0.5B-Instruct}
+      VLLM_HOST: 0.0.0.0
+      VLLM_PORT: 8000
+      VLLM_DTYPE: ${VLLM_DTYPE:-bfloat16}
+      VLLM_MAX_MODEL_LEN: ${VLLM_MAX_MODEL_LEN:-4096}
+      VLLM_GPU_MEMORY_UTILIZATION: ${VLLM_GPU_MEMORY_UTILIZATION:-0.9}
+      VLLM_USE_V1: ${VLLM_USE_V1:-1}
+      VLLM_ATTENTION_BACKEND: ${VLLM_ATTENTION_BACKEND:-FLASH_ATTN}
+      VLLM_ENABLE_CUSTOM_OPS: ${VLLM_ENABLE_CUSTOM_OPS:-0}
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
+    restart: unless-stopped

@@ -181,6 +181,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Ollama Integration Guide](docs/ollama_guide.md) — Model import, quantization, and API usage on DGX Spark
 - [llama.cpp Build Guide](docs/llama_cpp_guide.md) — sm_121 CUDA build and GGUF inference on DGX Spark
 - [NGC Container Recipe](docs/ngc_recipe.md) — Pinned NGC PyTorch workflow for DGX Spark LLM workloads
+- [Docker Compose vLLM Stack](docs/compose_vllm.md) — vLLM + OpenAI-compatible API via Docker Compose
 
 ## Roadmap
 
