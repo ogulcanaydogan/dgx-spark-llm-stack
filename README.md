@@ -85,6 +85,62 @@ source configs/env.sh
 ./build/build_bitsandbytes.sh # ~10 min
 ```
 
+## vLLM Container (Phase 4)
+
+Deterministic DGX Spark container flow using NGC PyTorch base + multi-stage vLLM source build.
+
+Build image:
+
+```bash
+docker build \
+  --build-arg VLLM_REF=v0.18.0 \
+  -f docker/vllm/Dockerfile \
+  -t dgx-spark-vllm:0.18.0 \
+  .
+```
+Note: first build can take significantly longer because `xformers` is compiled from source on ARM64.
+
+Run OpenAI-compatible server:
+
+```bash
+docker run --rm \
+  --gpus all \
+  --ipc=host \
+  --ulimit memlock=-1 \
+  --ulimit stack=67108864 \
+  -p 8000:8000 \
+  -e VLLM_MODEL=Qwen/Qwen2.5-0.5B-Instruct \
+  -e VLLM_USE_V1=1 \
+  -e VLLM_ATTENTION_BACKEND=FLASH_ATTN \
+  dgx-spark-vllm:0.18.0
+```
+
+Smoke test (build + /health + /v1/models):
+
+```bash
+./scripts/smoke_vllm_container.sh
+```
+
+Optional smoke build overrides:
+
+```bash
+XFORMERS_DISABLE_FLASH_ATTN=1 XFORMERS_BUILD_JOBS=2 ./scripts/smoke_vllm_container.sh
+```
+
+Key runtime env vars:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `VLLM_MODEL` | `Qwen/Qwen2.5-0.5B-Instruct` | Hugging Face model id |
+| `VLLM_HOST` | `0.0.0.0` | Bind host |
+| `VLLM_PORT` | `8000` | API port inside container |
+| `VLLM_DTYPE` | `bfloat16` | vLLM dtype |
+| `VLLM_MAX_MODEL_LEN` | `4096` | Max model length |
+| `VLLM_GPU_MEMORY_UTILIZATION` | `0.9` | GPU memory target ratio |
+| `VLLM_USE_V1` | `1` | Use vLLM V1 engine path |
+| `VLLM_ATTENTION_BACKEND` | `FLASH_ATTN` | Attention backend for V1 |
+| `VLLM_ENABLE_CUSTOM_OPS` | `0` | Keep custom C++ ops disabled by default on DGX Spark |
+
 ## Verification
 
 ```bash
