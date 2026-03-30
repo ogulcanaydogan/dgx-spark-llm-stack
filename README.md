@@ -178,6 +178,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Troubleshooting](docs/troubleshooting.md) — Known issues and solutions
 - [Reproducible Builds](docs/reproducible-builds.md) — Deterministic wheel build and release flow
 - [Benchmarks](docs/benchmarks.md) — Phase 3 baseline numbers and methodology
+- [Ollama Integration Guide](docs/ollama_guide.md) — Model import, quantization, and API usage on DGX Spark
 
 ## Roadmap
 
