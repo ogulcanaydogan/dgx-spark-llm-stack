@@ -60,7 +60,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - [x] PyTorch: PR to add `sm_121` to supported architectures
 - [x] Triton: Fix `ptxas` sm_121a recognition issue
 - [x] flash-attention: Open issue / PR for sm_121 kernel support
-- [ ] BitsAndBytes: Ensure ARM64 + CUDA 13.0 in CI matrix
+- [x] BitsAndBytes: Ensure ARM64 + CUDA 13.0 in CI matrix
 - [ ] vLLM: DGX Spark support in official Docker images
 - [x] Track upstream issue links in `docs/upstream_status.md`
 
