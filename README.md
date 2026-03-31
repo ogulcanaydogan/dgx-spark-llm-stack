@@ -193,8 +193,8 @@ This project is under active development. Here's what's next:
 | 1. Foundation | Repo structure, build scripts, docs, compat matrix | ✅ Done |
 | 2. Pre-built Wheels | Compile and publish wheels to GitHub Releases | ✅ Done |
 | 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | ✅ Done |
-| 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ⬚ Planned |
-| 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | ⬚ Planned |
+| 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ✅ Done |
+| 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | 🔄 In Progress |
 | 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | ⬚ Planned |
 
 Full details with task checklists: **[ROADMAP.md](ROADMAP.md)**

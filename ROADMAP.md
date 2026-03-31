@@ -62,7 +62,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - [ ] flash-attention: Open issue / PR for sm_121 kernel support
 - [ ] BitsAndBytes: Ensure ARM64 + CUDA 13.0 in CI matrix
 - [ ] vLLM: DGX Spark support in official Docker images
-- [ ] Track upstream issue links in `docs/upstream_status.md`
+- [x] Track upstream issue links in `docs/upstream_status.md`
 
 ## Phase 6 — Advanced
 
@@ -84,7 +84,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - 🔄 In progress
 - ⬚ Not started
 
-**Current Phase: 4 — Community & Ecosystem**
+**Current Phase: 5 — Upstream Contributions**
 
 ## How to Contribute
 
