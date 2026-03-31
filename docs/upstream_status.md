@@ -6,7 +6,7 @@ Last global check date: **2026-03-31**
 
 | Component | Upstream Repo | Issue / PR Links | Status | Last Checked | Local Evidence Pointer |
 |---|---|---|---|---|---|
-| PyTorch | [pytorch/pytorch](https://github.com/pytorch/pytorch) | [#172629 DGX Spark GB10 warning](https://github.com/pytorch/pytorch/issues/172629) | existing | 2026-03-31 | `docs/troubleshooting.md` (PyTorch section), `COMPATIBILITY.md` |
+| PyTorch | [pytorch/pytorch](https://github.com/pytorch/pytorch) | [#178891 add sm_121 Blackwell support in aarch64 CUDA13 binary arch selection](https://github.com/pytorch/pytorch/pull/178891), [#172629 DGX Spark GB10 warning](https://github.com/pytorch/pytorch/issues/172629) | opened | 2026-03-31 | `docs/troubleshooting.md` (PyTorch section), `COMPATIBILITY.md` |
 | Triton | [triton-lang/triton](https://github.com/triton-lang/triton) | [#9181 ptxas `sm_121a` not defined](https://github.com/triton-lang/triton/issues/9181) | existing | 2026-03-31 | `docs/troubleshooting.md` (Triton section), `COMPATIBILITY.md` |
 | flash-attention | [Dao-AILab/flash-attention](https://github.com/Dao-AILab/flash-attention) | [#1969 support `sm121` on GB10](https://github.com/Dao-AILab/flash-attention/issues/1969) | existing | 2026-03-31 | `docs/troubleshooting.md` (flash-attention section), `COMPATIBILITY.md` |
 | BitsAndBytes | [bitsandbytes-foundation/bitsandbytes](https://github.com/bitsandbytes-foundation/bitsandbytes) | [#1779 CUDA 13 architecture selection build issue](https://github.com/bitsandbytes-foundation/bitsandbytes/issues/1779), [#1218 aarch64 CUDA wheel request](https://github.com/bitsandbytes-foundation/bitsandbytes/issues/1218) | existing | 2026-03-31 | `docs/troubleshooting.md` (BitsAndBytes section), `build/build_bitsandbytes.sh` |
