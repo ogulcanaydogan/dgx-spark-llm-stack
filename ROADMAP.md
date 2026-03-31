@@ -50,7 +50,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - [x] llama.cpp build guide with sm_121 optimizations
 - [x] NGC container recipe for DGX Spark LLM workloads
 - [x] Docker Compose stack: vLLM + OpenAI-compatible API
-- [ ] Example notebooks: inference, fine-tuning, evaluation
+- [x] Example notebooks: inference, fine-tuning, evaluation
 - [ ] Contributing guide (`CONTRIBUTING.md`)
 
 ## Phase 5 — Upstream Contributions
