@@ -201,11 +201,9 @@ Full details with task checklists: **[ROADMAP.md](ROADMAP.md)**
 
 ## Contributing
 
-Contributions are welcome! Whether it's bug reports, build fixes, benchmark results, or documentation improvements:
+Read the contribution guide first: **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
-1. Check the [Roadmap](ROADMAP.md) for open tasks
-2. Open an issue to discuss your idea
-3. Submit a PR — one feature/fix per PR, clear commit messages
+Contributions are welcome, especially roadmap-aligned docs, build fixes, benchmarks, and integration improvements.
 
 ## System Specs (DGX Spark)
 
