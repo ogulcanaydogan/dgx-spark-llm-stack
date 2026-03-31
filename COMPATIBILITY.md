@@ -1,6 +1,6 @@
 # Compatibility Matrix — DGX Spark (GB10, sm_121)
 
-> Last updated: 2025-03-13
+> Last updated: 2026-03-31
 > System: DGX Spark, CUDA 13.0, GCC 13.3, Python 3.12, ARM64
 
 ## Overview
@@ -12,7 +12,7 @@ The NVIDIA GB10 GPU in DGX Spark uses the Blackwell architecture with compute ca
 | Library | Tested Version | Status | Install Method | Notes |
 |---------|---------------|--------|----------------|-------|
 | **PyTorch** | 2.9.1 | ⚠️ Works with warnings | Pre-built wheel | Official wheels target max sm_120. Emits "unsupported gpu architecture" warning during compilation but runs correctly. Our wheel is built with `TORCH_CUDA_ARCH_LIST=12.1`. |
-| **Triton** | 3.5.0 | ❌ Broken | Source build needed | `ptxas` does not recognize `sm_121a`. Requires patching Triton's GPU target detection. Main branch has partial fix. |
+| **Triton** | 3.5.1 | ⚠️ Works with env fix | Source build or installed wheel | Default bundled `ptxas` (12.8) can fail on `sm_121a`. Use `TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas` (13.0) on DGX Spark. |
 | **flash-attention** | 2.7+ | ❌ Not supported | Skip (use SDPA) | No sm_121 CUDA kernels. Compilation fails. Use PyTorch's built-in `F.scaled_dot_product_attention()` as fallback — performance is comparable on Blackwell. |
 | **TransformerEngine** | Latest | ❌ Broken | N/A | MXFP8 format not supported on sm_121. FP8 training will not work. Use BF16 instead. |
 
@@ -65,7 +65,14 @@ This warning is harmless. All operations work correctly — PyTorch uses sm_120 
 ```
 ptxas fatal : Unsupported GPU architecture 'sm_121a'
 ```
-Triton hardcodes GPU arch strings. Until upstream merges sm_121 support, Triton-dependent features (torch.compile with Triton backend, some custom kernels) won't work.
+This is reproducible with Triton 3.5.1 when it uses bundled `ptxas` 12.8.
+
+**Fix**:
+```bash
+export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
+```
+
+With CUDA 13.0 `ptxas`, Triton JIT compile works on GB10 (`sm_121a`). If compile still fails, disable `torch.compile()` for that workload.
 
 ### flash-attention Compilation Failure
 ```

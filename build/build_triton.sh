@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build Triton from source for DGX Spark (GB10, sm_121, CUDA 13.0)
-# Triton's ptxas invocation doesn't recognize sm_121a — this build attempts
-# to work around that by building from main branch which has partial fixes.
+# On DGX Spark, Triton may require system CUDA ptxas for sm_121a:
+#   export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
 #
 # Output: dist/triton-*.whl
 

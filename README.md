@@ -20,7 +20,7 @@
 DGX Spark ships with GB10 — a Blackwell GPU with compute capability `sm_121`. Most ML frameworks don't officially support this architecture yet:
 
 - **PyTorch**: Official wheels max out at `sm_120`, emit warnings on `sm_121`
-- **Triton**: `ptxas` doesn't recognize `sm_121a`, builds fail
+- **Triton**: bundled `ptxas` may fail on `sm_121a`; use CUDA 13.0 `ptxas` via env override
 - **flash-attention**: No `sm_121` kernels, compilation fails
 - **vLLM**: Requires Docker or source builds for Blackwell
 - **TransformerEngine**: MXFP8 broken on this arch
@@ -42,7 +42,7 @@ This downloads pre-built wheels from GitHub Releases and installs the full stack
 | Library | Version | sm_121 Status | Notes |
 |---------|---------|---------------|-------|
 | PyTorch | 2.9.1 | ⚠️ Warning, works | Official max sm_120; our wheel targets sm_121 |
-| Triton | 3.5.0 | ❌ Broken | ptxas doesn't recognize sm_121a |
+| Triton | 3.5.1 | ⚠️ Works with env fix | Set `TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas` on DGX Spark |
 | flash-attention | 2.7+ | ❌ Not supported | Use SDPA fallback (see docs) |
 | BitsAndBytes | 0.49+ | ✅ Works | FP4/NF4 quantization tested |
 | vLLM | 0.8+ | ⚠️ Docker only | Build from source or use NGC container |

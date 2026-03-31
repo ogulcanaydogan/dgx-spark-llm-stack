@@ -43,9 +43,14 @@ False
 ptxas fatal : Unsupported GPU architecture 'sm_121a'
 ```
 
-**Status**: Known Triton bug. `ptxas` from CUDA 13.0 doesn't recognize the `sm_121a` arch string that Triton generates.
+**Status**: Reproducible when Triton uses bundled `ptxas` 12.8 on DGX Spark.
 
-**Workaround**: Disable Triton backend for `torch.compile()`:
+**Fix**: Force Triton to use system CUDA 13.0 `ptxas`:
+```bash
+export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
+```
+
+**Fallback**: Disable Triton backend for `torch.compile()` if the workload still fails:
 ```python
 # Use inductor without Triton
 import torch
@@ -141,7 +146,7 @@ training_args = TrainingArguments(bf16=True)
 
 ### vLLM fails to install via pip
 
-vLLM depends on Triton, which doesn't build cleanly on sm_121.
+vLLM depends on Triton; on DGX Spark you may need `TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas` for Triton JIT paths.
 
 **Options**:
 1. Use NGC PyTorch container as base
