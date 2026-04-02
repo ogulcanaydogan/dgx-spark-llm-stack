@@ -183,6 +183,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [NGC Container Recipe](docs/ngc_recipe.md) — Pinned NGC PyTorch workflow for DGX Spark LLM workloads
 - [Docker Compose vLLM Stack](docs/compose_vllm.md) — vLLM + OpenAI-compatible API via Docker Compose
 - [Example Notebooks](docs/notebooks.md) — Inference, fine-tuning, and evaluation notebooks with Spark smoke flow
+- [FP8 Workaround](docs/fp8_workaround.md) — TransformerEngine FP8 fail + BF16 fallback validation on DGX Spark
 
 ## Roadmap
 
