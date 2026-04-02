@@ -74,7 +74,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - [ ] Speculative decoding benchmarks
 - [ ] KV cache optimization for 128 GB unified memory
 - [x] Continuous batching setup with vLLM
-- [ ] Power consumption and thermal profiling
+- [x] Power consumption and thermal profiling
 
 ---
 

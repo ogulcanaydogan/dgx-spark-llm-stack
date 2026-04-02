@@ -1,0 +1,26 @@
+{
+  "benchmark_type": "power_thermal_profile",
+  "duration_s": 182.214,
+  "first_sample_timestamp": "2026/04/02 10:26:05.630",
+  "generated_at_utc": "2026-04-02T10:29:09.733314+00:00",
+  "gpu_name": "NVIDIA GB10",
+  "last_sample_timestamp": "2026/04/02 10:29:08.699",
+  "metric_samples": {
+    "gpu_util_pct": 184,
+    "power_w": 184,
+    "temp_c": 184
+  },
+  "metrics": {
+    "avg_gpu_util_pct": 2.136,
+    "avg_power_w": 10.148,
+    "avg_temp_c": 37.277,
+    "max_gpu_util_pct": 96.0,
+    "max_power_w": 25.63,
+    "max_temp_c": 41.0
+  },
+  "sample_count": 184,
+  "sample_interval_ms": 1000,
+  "workload_cmd": "./scripts/smoke_vllm_continuous_batching.sh",
+  "workload_exit_code": 0,
+  "workload_log_path": "/tmp/power_thermal_workload.log"
+}

@@ -185,6 +185,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Example Notebooks](docs/notebooks.md) — Inference, fine-tuning, and evaluation notebooks with Spark smoke flow
 - [FP8 Workaround](docs/fp8_workaround.md) — TransformerEngine FP8 fail + BF16 fallback validation on DGX Spark
 - [Continuous Batching (vLLM)](docs/continuous_batching_vllm.md) — Serial vs concurrent OpenAI API smoke on DGX Spark
+- [Power/Thermal Profiling](docs/power_thermal_profiling.md) — Operational power and temperature profile during continuous batching smoke
 
 ## Roadmap
 
