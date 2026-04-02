@@ -21,6 +21,9 @@ VLLM_GPU_MEMORY_UTILIZATION="${VLLM_GPU_MEMORY_UTILIZATION:-0.9}"
 VLLM_USE_V1="${VLLM_USE_V1:-1}"
 VLLM_ATTENTION_BACKEND="${VLLM_ATTENTION_BACKEND:-FLASH_ATTN}"
 VLLM_ENABLE_CUSTOM_OPS="${VLLM_ENABLE_CUSTOM_OPS:-0}"
+ENABLE_HF_CACHE_MOUNT="${ENABLE_HF_CACHE_MOUNT:-1}"
+HF_CACHE_HOST_DIR="${HF_CACHE_HOST_DIR:-$HOME/.cache/huggingface}"
+HF_CACHE_CONTAINER_DIR="${HF_CACHE_CONTAINER_DIR:-/root/.cache/huggingface}"
 
 VLLM_HOST_PORT="${VLLM_HOST_PORT:-8000}"
 READY_TIMEOUT_SECS="${READY_TIMEOUT_SECS:-900}"
@@ -106,6 +109,13 @@ build_image() {
 
 start_container() {
   local image_tag="$1"
+  local -a volume_args=()
+
+  if [[ "${ENABLE_HF_CACHE_MOUNT}" == "1" ]]; then
+    mkdir -p "${HF_CACHE_HOST_DIR}"
+    volume_args+=(--volume "${HF_CACHE_HOST_DIR}:${HF_CACHE_CONTAINER_DIR}")
+  fi
+
   RUN_HOST_PORT="${VLLM_HOST_PORT}"
   if [[ "$(port_is_available "${RUN_HOST_PORT}")" != "1" ]]; then
     RUN_HOST_PORT="$(find_free_port)"
@@ -122,6 +132,7 @@ start_container() {
     --ulimit memlock=-1 \
     --ulimit stack=67108864 \
     --publish "${RUN_HOST_PORT}:8000" \
+    "${volume_args[@]}" \
     --env "VLLM_MODEL=${VLLM_MODEL}" \
     --env "VLLM_DTYPE=${VLLM_DTYPE}" \
     --env "VLLM_MAX_MODEL_LEN=${VLLM_MAX_MODEL_LEN}" \

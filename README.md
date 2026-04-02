@@ -188,6 +188,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Power/Thermal Profiling](docs/power_thermal_profiling.md) — Operational power and temperature profile during continuous batching smoke
 - [Multi-GPU Guide](docs/multi_gpu_guide.md) — Distributed preflight and torchrun cluster recipe for DGX Spark environments
 - [Speculative Decoding](docs/speculative_decoding.md) — Baseline vs assistant-model benchmark artifact on DGX Spark
+- [KV Cache Optimization](docs/kv_cache_optimization.md) — vLLM max-model-len and memory-utilization sweep with recommended profile
 
 ## Roadmap
 

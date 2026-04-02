@@ -1,0 +1,278 @@
+{
+  "benchmark_type": "kv_cache_optimization",
+  "generated_at_utc": "2026-04-02T20:03:43.134156+00:00",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "recommended_profile": {
+    "concurrent_throughput_req_per_s": 17.811617773446486,
+    "gpu_memory_utilization": 0.85,
+    "max_model_len": 4096,
+    "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util085.json",
+    "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util085.log",
+    "serial_throughput_req_per_s": 2.0102922682169284
+  },
+  "results": [
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.44196973531325057,
+        "elapsed_s": 0.89829010500398,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.811617773446486,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.85,
+      "max_model_len": 4096,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util085.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util085.log",
+      "serial_summary": {
+        "avg_latency_s": 0.49732949049939634,
+        "elapsed_s": 1.989760426004068,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 2.0102922682169284,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.4492475366250801,
+        "elapsed_s": 0.9028665599907981,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.72133414727761,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.9,
+      "max_model_len": 4096,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util090.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util090.log",
+      "serial_summary": {
+        "avg_latency_s": 0.5090550607528712,
+        "elapsed_s": 2.036717171999044,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.9639447513834178,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": null,
+      "error": "(APIServer pid=1) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}",
+      "exit_code": 1,
+      "gpu_memory_utilization": 0.95,
+      "max_model_len": 4096,
+      "pass": false,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util095.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len4096_util095.log",
+      "serial_summary": null
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.45536594050008716,
+        "elapsed_s": 0.9156240150041413,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.47442152871846,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.85,
+      "max_model_len": 8192,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util085.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util085.log",
+      "serial_summary": {
+        "avg_latency_s": 0.5149362859992834,
+        "elapsed_s": 2.0601683929999126,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.9415888592366002,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.45749886900011916,
+        "elapsed_s": 0.9196190570073668,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.398508521634334,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.9,
+      "max_model_len": 8192,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util090.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util090.log",
+      "serial_summary": {
+        "avg_latency_s": 0.5180560572516697,
+        "elapsed_s": 2.072671125002671,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.929876839479223,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.6212374745000488,
+        "elapsed_s": 1.3128342220006743,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 12.187372732877908,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.95,
+      "max_model_len": 8192,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util095.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len8192_util095.log",
+      "serial_summary": {
+        "avg_latency_s": 0.6068267655027739,
+        "elapsed_s": 2.4298494609975023,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.6461925169462635,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.45039377493685606,
+        "elapsed_s": 0.9065277210029308,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.64976363028205,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.85,
+      "max_model_len": 16384,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util085.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util085.log",
+      "serial_summary": {
+        "avg_latency_s": 0.513827889746608,
+        "elapsed_s": 2.055835097999079,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.945681345694095,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.45471811562401854,
+        "elapsed_s": 0.9243753409973579,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 17.308986177343012,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.9,
+      "max_model_len": 16384,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util090.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util090.log",
+      "serial_summary": {
+        "avg_latency_s": 0.5103544880003028,
+        "elapsed_s": 2.041885907005053,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.9589733129932911,
+        "total": 4
+      }
+    },
+    {
+      "concurrent_summary": {
+        "avg_latency_s": 0.6298688208735257,
+        "elapsed_s": 1.2869368259998737,
+        "errors": 0,
+        "label": "concurrent",
+        "non_empty_outputs": 16,
+        "success": 16,
+        "throughput_req_per_s": 12.432622702803572,
+        "total": 16
+      },
+      "error": null,
+      "exit_code": 0,
+      "gpu_memory_utilization": 0.95,
+      "max_model_len": 16384,
+      "pass": true,
+      "result_json_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util095.json",
+      "run_log_path": "/tmp/kv_cache_opt_2026-04-02_4129444/len16384_util095.log",
+      "serial_summary": {
+        "avg_latency_s": 0.6211472260001756,
+        "elapsed_s": 2.485017943996354,
+        "errors": 0,
+        "label": "serial",
+        "non_empty_outputs": 4,
+        "success": 4,
+        "throughput_req_per_s": 1.6096463245522017,
+        "total": 4
+      }
+    }
+  ],
+  "selection_rule": "Choose highest concurrent throughput among passing profiles; tie-break by lower gpu_memory_utilization, then lower max_model_len.",
+  "sweep_config": {
+    "baseline_requests": 4,
+    "concurrency": 8,
+    "concurrent_requests": 16,
+    "enable_hf_cache_mount": "1",
+    "gpu_memory_utilization_list": [
+      0.85,
+      0.9,
+      0.95
+    ],
+    "max_model_len_list": [
+      4096,
+      8192,
+      16384
+    ],
+    "max_tokens": 48,
+    "ready_timeout_secs": 1800,
+    "request_timeout_secs": 120
+  }
+}
