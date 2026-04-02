@@ -1,0 +1,9 @@
+{
+  "cuda_device_count": 1,
+  "cuda_version": "13.0",
+  "hostname": "f589a64a2ea3",
+  "nccl_available": true,
+  "timestamp_utc": "2026-04-02T11:06:06.216569+00:00",
+  "torch_version": "2.10.0a0+b558c986e8.nv25.11",
+  "torchrun_single_rank_nccl_ok": true
+}
