@@ -73,7 +73,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 - [x] FP8 workaround for TransformerEngine on Blackwell
 - [ ] Speculative decoding benchmarks
 - [ ] KV cache optimization for 128 GB unified memory
-- [ ] Continuous batching setup with vLLM
+- [x] Continuous batching setup with vLLM
 - [ ] Power consumption and thermal profiling
 
 ---
