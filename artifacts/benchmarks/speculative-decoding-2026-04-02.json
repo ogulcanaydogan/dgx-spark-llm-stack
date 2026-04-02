@@ -1,0 +1,39 @@
+{
+  "baseline": {
+    "avg_output_tokens": 116.0,
+    "avg_time_s": 8.7778,
+    "gpu_memory_gb": 15.255,
+    "model_load_time_s": 93.3089,
+    "runs": 5,
+    "tokens_per_sec": 13.2152
+  },
+  "benchmark_type": "speculative_decoding",
+  "comparison": {
+    "speedup_ratio_vs_baseline": 1.7292
+  },
+  "config": {
+    "device_map": "cuda:0",
+    "draft_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "prompt": "Summarize why speculative decoding can improve LLM serving throughput in one paragraph.",
+    "runs": 5,
+    "target_model": "Qwen/Qwen2.5-7B-Instruct",
+    "tokens": 256
+  },
+  "environment": {
+    "cuda_version": "13.0",
+    "generated_at_utc": "2026-04-02T16:47:11.925770+00:00",
+    "gpu_memory_gb": 130.7,
+    "gpu_name": "NVIDIA GB10",
+    "python_version": "3.12.3",
+    "torch_version": "2.11.0+cu130"
+  },
+  "speculative": {
+    "avg_output_tokens": 116.0,
+    "avg_time_s": 5.0763,
+    "gpu_memory_gb": 16.263,
+    "model_load_time_s": 7.5673,
+    "runs": 5,
+    "tokens_per_sec": 22.8512
+  }
+}

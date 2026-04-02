@@ -187,6 +187,7 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Continuous Batching (vLLM)](docs/continuous_batching_vllm.md) — Serial vs concurrent OpenAI API smoke on DGX Spark
 - [Power/Thermal Profiling](docs/power_thermal_profiling.md) — Operational power and temperature profile during continuous batching smoke
 - [Multi-GPU Guide](docs/multi_gpu_guide.md) — Distributed preflight and torchrun cluster recipe for DGX Spark environments
+- [Speculative Decoding](docs/speculative_decoding.md) — Baseline vs assistant-model benchmark artifact on DGX Spark
 
 ## Roadmap
 
