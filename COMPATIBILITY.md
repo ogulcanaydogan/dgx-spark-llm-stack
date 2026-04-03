@@ -1,6 +1,6 @@
 # Compatibility Matrix — DGX Spark (GB10, sm_121)
 
-> Last updated: 2026-03-31
+> Last updated: 2026-04-03
 > System: DGX Spark, CUDA 13.0, GCC 13.3, Python 3.12, ARM64
 
 ## Overview
@@ -30,7 +30,7 @@ The NVIDIA GB10 GPU in DGX Spark uses the Blackwell architecture with compute ca
 | Library | Tested Version | Status | Install Method | Notes |
 |---------|---------------|--------|----------------|-------|
 | **vLLM** | 0.8+ | ⚠️ Docker only | NGC container or source build | Does not pip-install cleanly due to Triton dependency. Use NGC PyTorch container as base. |
-| **TensorRT-LLM** | 0.9+ | ⚠️ Partial | NGC container | Basic inference works. Attention sinks and some advanced features broken. |
+| **TensorRT-LLM** | 0.9+ | ⚠️ Partial | NGC container | Legacy `1.1.0rc1` reproduces SM90-only attention-sinks assertion on `sm_121`; stable `1.2.0` pass validated by repo smoke (`2026-04-03`). |
 | **Ollama** | Latest | ✅ Works | Binary install | Uses llama.cpp backend. Simple and effective for local inference. |
 | **text-generation-inference** | Latest | ⚠️ Untested | Docker | Should work via Docker with NGC base image. Community testing welcome. |
 
@@ -85,6 +85,19 @@ flash-attention does not include sm_121 kernels. The recommended workaround is P
 RuntimeError: MXFP8 is not supported on compute capability 12.1
 ```
 FP8 mixed-precision training via TransformerEngine is not available. Use BF16 training instead — GB10 has excellent BF16 throughput.
+
+### TensorRT-LLM Attention Sinks on `sm_121`
+Legacy TensorRT-LLM tags can fail with:
+```
+Assertion failed: The attention sinks is only supported on SM90
+```
+Use the repo smoke flow to validate fail+pass behavior:
+```bash
+./scripts/smoke_tensorrt_llm_attention_sinks.sh
+```
+The roadmap closure condition requires:
+- legacy case includes the SM90 assertion
+- stable case has no SM90 assertion and writes benchmark report JSON
 
 ## Recommended Stack
 

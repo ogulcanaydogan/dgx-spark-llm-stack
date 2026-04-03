@@ -69,7 +69,7 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 > Multi-GPU, TensorRT-LLM, and advanced optimizations.
 
 - [x] Multi-GPU guide (DGX Spark cluster with NVLink)
-- [ ] TensorRT-LLM: fix attention sinks on sm_121
+- [x] TensorRT-LLM: fix attention sinks on sm_121
 - [x] FP8 workaround for TransformerEngine on Blackwell
 - [x] Speculative decoding benchmarks
 - [x] KV cache optimization for 128 GB unified memory

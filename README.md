@@ -47,7 +47,7 @@ This downloads pre-built wheels from GitHub Releases and installs the full stack
 | BitsAndBytes | 0.49+ | ✅ Works | FP4/NF4 quantization tested |
 | vLLM | 0.8+ | ⚠️ Docker only | Build from source or use NGC container |
 | llama.cpp | Latest | ✅ Works well | Best option for inference |
-| TensorRT-LLM | 0.9+ | ⚠️ Partial | Attention sinks broken |
+| TensorRT-LLM | 0.9+ | ⚠️ Partial | Legacy `1.1.0rc1` fails with SM90-only assertion; stable `1.2.0` pass validated (2026-04-03) |
 | TransformerEngine | - | ❌ Broken | MXFP8 training unsupported |
 | Unsloth | Latest | ✅ Works | Recommended for fine-tuning |
 | transformers | 4.48+ | ✅ Works | Standard HF stack |
@@ -189,6 +189,9 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Multi-GPU Guide](docs/multi_gpu_guide.md) — Distributed preflight and torchrun cluster recipe for DGX Spark environments
 - [Speculative Decoding](docs/speculative_decoding.md) — Baseline vs assistant-model benchmark artifact on DGX Spark
 - [KV Cache Optimization](docs/kv_cache_optimization.md) — vLLM max-model-len and memory-utilization sweep with recommended profile
+- [TensorRT-LLM Attention Sinks](docs/tensorrt_llm_attention_sinks.md) — Deterministic fail (legacy) + pass (stable) validation on `sm_121`
+- [Visibility Strategy](docs/visibility.md) — Community distribution, KPI tracking, and messaging guardrails
+- [Community Launch Pack](docs/launch_pack.md) — Copy-ready X/Reddit/HN/forum posts with CTA and link set
 
 ## Roadmap
 
@@ -201,7 +204,7 @@ This project is under active development. Here's what's next:
 | 3. Benchmarks | Inference tok/s, training throughput, model-specific tables | ✅ Done |
 | 4. Community | vLLM Dockerfile, Ollama, llama.cpp guide, NGC recipe | ✅ Done |
 | 5. Upstream | PyTorch sm_121 PR, Triton fix, flash-attention issue | ✅ Done |
-| 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | 🔄 In Progress |
+| 6. Advanced | Multi-GPU, TensorRT-LLM, FP8 workaround | ✅ Done |
 
 Full details with task checklists: **[ROADMAP.md](ROADMAP.md)**
 

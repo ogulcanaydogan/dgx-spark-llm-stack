@@ -1,0 +1,32 @@
+{
+  "benchmark_type": "tensorrt_llm_attention_sinks",
+  "closure_ready": true,
+  "command_config": {
+    "backend": "pytorch",
+    "concurrency": 8,
+    "streaming": true,
+    "tp_size": 1
+  },
+  "fail_case": {
+    "error_excerpt": "RuntimeError: Executor worker returned error",
+    "exit_code": 1,
+    "exit_code_raw": "1",
+    "has_sm90_assertion": true,
+    "image": "nvcr.io/nvidia/tensorrt-llm/release:1.1.0rc1",
+    "log_path": "/tmp/trtllm-attention-sinks-2026-04-03-1316335/fail-case.log",
+    "report_json_exists": false,
+    "report_json_path": "/tmp/trtllm-attention-sinks-2026-04-03-1316335/fail-report.json"
+  },
+  "generated_at_utc": "2026-04-03T07:56:56.482099+00:00",
+  "model_id": "openai/gpt-oss-20b",
+  "pass_case": {
+    "error_excerpt": "",
+    "exit_code": 0,
+    "exit_code_raw": "0",
+    "has_sm90_assertion": false,
+    "image": "nvcr.io/nvidia/tensorrt-llm/release:1.2.0",
+    "log_path": "/tmp/trtllm-attention-sinks-2026-04-03-1316335/pass-case.log",
+    "report_json_exists": true,
+    "report_json_path": "/tmp/trtllm-attention-sinks-2026-04-03-1316335/pass-report.json"
+  }
+}
