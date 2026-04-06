@@ -1,0 +1,7 @@
+{
+  "status": "pending_exact_tplus24_capture",
+  "repo": "ogulcanaydogan/dgx-spark-llm-stack",
+  "baseline_file": "docs/day1_metrics_baseline_2026-04-05.json",
+  "scheduled_capture_at_utc": "2026-04-06T20:45:43Z",
+  "note": "Populate this file after exact T+24 timestamp with stars/forks/watchers, traffic views/uniques, latest release asset download totals, and computed deltas vs baseline."
+}

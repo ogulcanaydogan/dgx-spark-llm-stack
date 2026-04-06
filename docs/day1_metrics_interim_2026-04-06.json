@@ -1,0 +1,30 @@
+{
+  "captured_at_utc": "2026-04-06T08:50:54Z",
+  "repo": "ogulcanaydogan/dgx-spark-llm-stack",
+  "stars": 1,
+  "forks": 0,
+  "watchers": 0,
+  "traffic_14d": {
+    "count": 37,
+    "uniques": 21
+  },
+  "latest_release": {
+    "tag": "v0.1.0",
+    "published_at": "2026-03-13T09:07:49Z",
+    "asset_download_total": 18,
+    "assets": [
+      {
+        "name": "bitsandbytes-0.49.0-cp312-cp312-linux_aarch64.whl",
+        "download_count": 5
+      },
+      {
+        "name": "SHA256SUMS",
+        "download_count": 5
+      },
+      {
+        "name": "torch-2.9.1a0+gitd38164a-cp312-cp312-linux_aarch64.whl",
+        "download_count": 8
+      }
+    ]
+  }
+}
