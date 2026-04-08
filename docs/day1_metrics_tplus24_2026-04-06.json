@@ -1,7 +1,27 @@
 {
-  "status": "pending_exact_tplus24_capture",
+  "captured_at_utc": "2026-04-08T09:26:37Z",
+  "scheduled_tplus24_at_utc": "2026-04-06T20:45:43Z",
   "repo": "ogulcanaydogan/dgx-spark-llm-stack",
   "baseline_file": "docs/day1_metrics_baseline_2026-04-05.json",
-  "scheduled_capture_at_utc": "2026-04-06T20:45:43Z",
-  "note": "Populate this file after exact T+24 timestamp with stars/forks/watchers, traffic views/uniques, latest release asset download totals, and computed deltas vs baseline."
+  "snapshot": {
+    "stars": 1,
+    "forks": 0,
+    "watchers": 0,
+    "traffic_14d": {
+      "count": 45,
+      "uniques": 23
+    },
+    "latest_release": {
+      "tag": "v0.1.0",
+      "asset_download_total": 22
+    }
+  },
+  "delta_vs_baseline": {
+    "stars": 0,
+    "forks": 0,
+    "watchers": 0,
+    "traffic_count": 22,
+    "traffic_uniques": 6,
+    "release_asset_download_total": 4
+  }
 }
