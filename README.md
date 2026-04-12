@@ -192,6 +192,8 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [TensorRT-LLM Attention Sinks](docs/tensorrt_llm_attention_sinks.md) — Deterministic fail (legacy) + pass (stable) validation on `sm_121`
 - [Visibility Strategy](docs/visibility.md) — Community distribution, KPI tracking, and messaging guardrails
 - [Community Launch Pack](docs/launch_pack.md) — Copy-ready X/Reddit/HN/forum posts with CTA and link set
+- [Day 1 Launch Log](docs/day1_launch_2026-04-05.md) — X + GitHub announcement execution record and KPI deltas
+- [Day 2 Launch Log](docs/day2_launch_2026-04-12.md) — Reddit `r/LocalLLaMA` post draft, baseline metrics, and follow-up checklist
 
 ## Roadmap
 

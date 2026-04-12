@@ -1,0 +1,31 @@
+{
+  "captured_at_utc": "2026-04-12T19:02:51Z",
+  "repo": "ogulcanaydogan/dgx-spark-llm-stack",
+  "channel": "reddit:r/LocalLLaMA",
+  "stars": 1,
+  "forks": 0,
+  "watchers": 0,
+  "traffic_14d": {
+    "count": 52,
+    "uniques": 29
+  },
+  "latest_release": {
+    "tag": "v0.1.0",
+    "published_at": "2026-03-13T09:07:49Z",
+    "asset_download_total": 27,
+    "assets": [
+      {
+        "name": "bitsandbytes-0.49.0-cp312-cp312-linux_aarch64.whl",
+        "download_count": 9
+      },
+      {
+        "name": "SHA256SUMS",
+        "download_count": 7
+      },
+      {
+        "name": "torch-2.9.1a0+gitd38164a-cp312-cp312-linux_aarch64.whl",
+        "download_count": 11
+      }
+    ]
+  }
+}
