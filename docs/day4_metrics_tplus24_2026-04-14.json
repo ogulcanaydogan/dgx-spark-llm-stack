@@ -1,0 +1,27 @@
+{
+  "captured_at_utc": "2026-04-14T09:03:08Z",
+  "repo": "ogulcanaydogan/dgx-spark-llm-stack",
+  "channel": "show-hn",
+  "baseline_file": "docs/day4_metrics_baseline_2026-04-13.json",
+  "snapshot": {
+    "stars": 1,
+    "forks": 0,
+    "watchers": 0,
+    "traffic_14d": {
+      "count": 54,
+      "uniques": 33
+    },
+    "latest_release": {
+      "tag": "v0.1.0",
+      "asset_download_total": 27
+    }
+  },
+  "delta_vs_baseline": {
+    "stars": 0,
+    "forks": 0,
+    "watchers": 0,
+    "traffic_count": 2,
+    "traffic_uniques": 4,
+    "release_asset_download_total": 0
+  }
+}
