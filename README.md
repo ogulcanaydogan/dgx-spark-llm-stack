@@ -197,6 +197,8 @@ Phase 3 benchmark results (Qwen 7B/14B/32B/72B inference, FP16/NF4/FP4 quality, 
 - [Day 3 Launch Log](docs/day3_launch_2026-04-13.md) — Reddit `r/nvidia` post draft, baseline metrics, and follow-up checklist
 - [Day 4 Launch Log](docs/day4_launch_2026-04-13.md) — Show HN post draft, baseline metrics, and follow-up checklist
 - [Day 5 Launch Log](docs/day5_launch_2026-04-13.md) — NVIDIA forum + Hugging Face reply template, baseline metrics, and follow-up checklist
+- [Day 6 Launch Log](docs/day6_launch_2026-04-17.md) — NVIDIA forum follow-up reply template, baseline metrics, and follow-up checklist
+- [Day 7 Launch Log](docs/day7_launch_2026-04-17.md) — Hugging Face discussion follow-up and week-1 wrap checklist
 
 ## Roadmap
 
