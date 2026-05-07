@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set benchmark date
         shell: bash
@@ -114,7 +114,7 @@ jobs:
           ls -lh "${BENCH_ARCHIVE}"
 
       - name: Upload FP4 benchmark artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phase3-fp4-${{ env.BENCH_DATE }}
           path: ${{ env.BENCH_ARCHIVE }}
