@@ -1,9 +1,29 @@
-# Compatibility Matrix — DGX Spark (GB10, sm_121)
+# Compatibility Matrix
 
-> Last updated: 2026-04-03
+> Last updated: 2026-05-14
+> v0.2.0 introduces hardware profiles. This document now covers both supported targets.
+
+## Supported Hardware Profiles
+
+Starting with v0.2.0 the stack is profile-selectable via `HW_PROFILE`:
+
+| Profile | GPU | Architecture | Compute Cap | OS / Arch | CUDA |
+|---------|-----|-------------|-------------|-----------|------|
+| `dgx-spark` (default) | NVIDIA DGX Spark (GB10) | Blackwell | sm_121 | ARM64 | 13.0 |
+| `h100` | NVIDIA H100 SXM5 / PCIe | Hopper | sm_90 | x86_64 | 12.4+ |
+
+Select a profile before sourcing the build environment:
+```bash
+source configs/env.sh                   # default: dgx-spark
+HW_PROFILE=h100 source configs/env.sh  # H100
+python3 scripts/check_compatibility.py --profile h100
+```
+
+---
+
+## DGX Spark (GB10, sm_121)
+
 > System: DGX Spark, CUDA 13.0, GCC 13.3, Python 3.12, ARM64
-
-## Overview
 
 The NVIDIA GB10 GPU in DGX Spark uses the Blackwell architecture with compute capability `sm_121`. This is newer than what most ML frameworks officially support, leading to various compatibility issues.
 
@@ -45,11 +65,42 @@ The NVIDIA GB10 GPU in DGX Spark uses the Blackwell architecture with compute ca
 | **DeepSpeed** | Latest | ⚠️ Partial | pip | ZeRO-1/2 work. ZeRO-3 untested on single GPU. |
 | **Axolotl** | Latest | ⚠️ Partial | pip | Works if you disable flash-attention (use SDPA). |
 
+---
+
+## H100 (Hopper, sm_90)
+
+> Profile: `h100` — x86_64, CUDA 12.4+
+
+H100 is a first-class citizen in all major ML frameworks. Upstream pip wheels work without custom builds. This section documents the expected status once live validation is complete in v0.2.0.
+
+### Core ML Frameworks
+
+| Library | Status | Notes |
+|---------|--------|-------|
+| **PyTorch** | ✅ Works | Official wheels ship sm_90 kernels. `pip install torch` works. |
+| **Triton** | ✅ Works | No ptxas workaround needed; Hopper is fully supported. |
+| **flash-attention** | ✅ Full support | sm_90 CUDA kernels ship in the standard wheel. |
+| **TransformerEngine** | ✅ Works | FP8 mixed-precision available on Hopper. |
+
+### Inference Servers
+
+| Library | Status | Notes |
+|---------|--------|-------|
+| **vLLM** | ✅ pip-installable | H100 is a primary vLLM target; no source build needed. |
+| **TensorRT-LLM** | ✅ Works | sm_90 is a primary TRT-LLM target; no attention-sinks workaround. |
+| **Ollama** | ✅ Works | Binary install, same as DGX Spark. |
+
+### Status (v0.2.0)
+
+H100 profile scaffold is merged. Live benchmark numbers and smoke-test matrix land in the v0.2.0 release train. Track progress in `ROADMAP.md`.
+
+---
+
 ## Status Legend
 
 | Symbol | Meaning |
 |--------|---------|
-| ✅ Works | Tested and functional on DGX Spark |
+| ✅ Works | Tested and functional |
 | ⚠️ Partial / Warning | Works with caveats or workarounds needed |
 | ❌ Broken | Does not work; alternative recommended |
 

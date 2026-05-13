@@ -1,19 +1,19 @@
 # DGX Spark LLM Stack
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-ARM64-green.svg)]()
-[![CUDA](https://img.shields.io/badge/CUDA-13.0-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
+[![Platform](https://img.shields.io/badge/Platform-ARM64%20%7C%20x86__64-green.svg)]()
+[![CUDA](https://img.shields.io/badge/CUDA-13.0%20%7C%2012.4-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg)](https://python.org)
-[![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)-76B900.svg)]()
+[![GPU](https://img.shields.io/badge/GPU-GB10_(sm__121)_%7C_H100_(sm__90)-76B900.svg)]()
 [![Benchmark Baseline](https://img.shields.io/badge/Baseline-2026--03--13-0A66C2.svg)]()
 [![Inference 14B NF4](https://img.shields.io/badge/Inference_14B_NF4-18.91_tok%2Fs-0A7D00.svg)]()
 [![Inference 32B FP4](https://img.shields.io/badge/Inference_32B_FP4-9.79_tok%2Fs-006D77.svg)]()
 [![Inference 72B NF4](https://img.shields.io/badge/Inference_72B_NF4-3.80_tok%2Fs-8A2BE2.svg)]()
 [![Training 7B LoRA](https://img.shields.io/badge/Training_7B_LoRA-2.58_samples%2Fs-0057B8.svg)]()
 
-**PyTorch, Triton, flash-attention, BitsAndBytes** — pre-built wheels and reproducible build scripts for **NVIDIA DGX Spark** (GB10, sm_121, Blackwell, CUDA 13.0, Python 3.12, ARM64).
+**PyTorch, Triton, flash-attention, BitsAndBytes** — pre-built wheels and reproducible build scripts for **NVIDIA DGX Spark** (GB10, sm_121) and **H100** (Hopper, sm_90). Profile-selectable via `HW_PROFILE`.
 
-> Can't `pip install torch` on your DGX Spark? You're in the right place.
+> Can't `pip install torch` on your DGX Spark? You're in the right place. Running on H100? The stack works there too — see [Hardware Profiles](#hardware-profiles) below.
 
 ## The Problem
 
@@ -32,10 +32,26 @@ This repo provides **build scripts, pre-built wheels, compatibility info, and be
 ```bash
 git clone https://github.com/ogulcanaydogan/dgx-spark-llm-stack.git
 cd dgx-spark-llm-stack
-./install.sh
+./install.sh           # default: DGX Spark (GB10)
+HW_PROFILE=h100 ./install.sh  # H100 (Hopper) — uses upstream pip wheels
 ```
 
 This downloads pre-built wheels from GitHub Releases and installs the full stack. After installation, it runs verification automatically.
+
+## Hardware Profiles
+
+v0.2.0 introduces profile-based hardware selection. Set `HW_PROFILE` before sourcing the build environment:
+
+| `HW_PROFILE` | GPU | Compute Cap | Install strategy |
+|---|---|---|---|
+| `dgx-spark` (default) | DGX Spark (GB10) | sm_121 | Custom wheels (no pip-install) |
+| `h100` | H100 SXM5 / PCIe | sm_90 | Upstream pip wheels |
+
+```bash
+source configs/env.sh                    # dgx-spark defaults
+HW_PROFILE=h100 source configs/env.sh  # H100
+python3 scripts/check_compatibility.py --profile h100
+```
 
 ## Compatibility Matrix
 

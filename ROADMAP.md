@@ -78,6 +78,24 @@ This document tracks the development roadmap for DGX Spark LLM Stack. Each phase
 
 ---
 
+## v0.2.0 — Multi-hardware Support
+
+> Target: 2026-Q3
+
+Extends the stack beyond DGX Spark to a second hardware family. Profile-based configuration allows users to select their hardware at `source configs/env.sh` time without modifying build scripts.
+
+- [x] Hardware-profile abstraction (`configs/profiles/dgx-spark.env`, `configs/profiles/h100.env`)
+- [x] Profile-aware `configs/env.sh` (selectable via `HW_PROFILE` env, default `dgx-spark`)
+- [x] Profile-aware `scripts/check_compatibility.py --profile h100|dgx-spark`
+- [x] H100 (Hopper, sm_90) documented in `COMPATIBILITY.md`
+- [ ] H100 install path in `install.sh` (skip custom-wheel build, use upstream pip)
+- [ ] H100 Docker variant in `docker/vllm/Dockerfile`
+- [ ] H100 smoke tests (`scripts/smoke_*.sh` profile-aware)
+- [ ] CI matrix: add `h100` profile axis (requires self-hosted x86_64 runner)
+- [ ] Live H100 benchmark numbers in `docs/benchmarks.md`
+
+---
+
 ## Status Legend
 
 - ✅ Phase complete
