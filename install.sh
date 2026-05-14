@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # DGX Spark LLM Stack — One-command installer
-# Downloads pre-built wheels from GitHub Releases and installs the full stack.
 #
-# Usage: ./install.sh [--from-source]
+# Usage:
+#   ./install.sh              # default: DGX Spark (GB10), custom wheels
+#   HW_PROFILE=h100 ./install.sh        # H100 (Hopper), upstream pip wheels
+#   ./install.sh --from-source          # build everything from source (DGX Spark only)
 
 set -euo pipefail
 
@@ -19,6 +21,21 @@ NC='\033[0m'
 info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
+
+# ── Load hardware profile ─────────────────────────────────────────────────────
+
+load_profile() {
+    local env_sh="${SCRIPT_DIR}/configs/env.sh"
+    if [[ -f "${env_sh}" ]]; then
+        # shellcheck source=configs/env.sh
+        source "${env_sh}"
+    else
+        warn "configs/env.sh not found; falling back to DGX Spark defaults."
+        HW_PROFILE="${HW_PROFILE:-dgx-spark}"
+        EXPECTED_ARCH="${EXPECTED_ARCH:-aarch64}"
+        INSTALL_STRATEGY="${INSTALL_STRATEGY:-custom-wheels}"
+    fi
+}
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -80,44 +97,57 @@ PY
 check_system() {
     info "Checking system requirements..."
 
-    # Check we're on Linux ARM64
     if [[ "$(uname -s)" != "Linux" ]]; then
         error "This installer is for Linux only (detected: $(uname -s))"
     fi
 
-    if [[ "$(uname -m)" != "aarch64" ]]; then
-        error "This installer is for ARM64 only (detected: $(uname -m))"
+    local actual_arch
+    actual_arch="$(uname -m)"
+    if [[ "${actual_arch}" != "${EXPECTED_ARCH}" ]]; then
+        error "Profile '${HW_PROFILE}' expects ${EXPECTED_ARCH} but found ${actual_arch}. Set HW_PROFILE correctly."
     fi
 
-    # Check Python version
     PYTHON_VERSION=$(python3 --version 2>&1 | grep -oP '\d+\.\d+')
     if [[ "${PYTHON_VERSION}" != "3.12" ]]; then
         warn "Expected Python 3.12, found ${PYTHON_VERSION}. Wheels may not be compatible."
     fi
 
-    # Check CUDA
     if ! command -v nvcc &>/dev/null; then
-        error "nvcc not found. Is CUDA installed? Expected CUDA 13.0 at /usr/local/cuda-13.0"
+        error "nvcc not found. Is CUDA installed? Expected CUDA at ${CUDA_HOME:-<not set>}"
     fi
 
     CUDA_VERSION=$(nvcc --version | grep -oP 'release \K[\d.]+')
     info "CUDA version: ${CUDA_VERSION}"
 
-    # Check GPU
     if command -v nvidia-smi &>/dev/null; then
         GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1)
         info "GPU: ${GPU_NAME}"
     fi
 }
 
-# ── Install from pre-built wheels ─────────────────────────────────────────────
+# ── H100 upstream-wheels install ──────────────────────────────────────────────
+
+install_upstream_pytorch() {
+    info "H100 profile: installing PyTorch from upstream wheels (cu124)..."
+    pip install --upgrade pip setuptools wheel
+
+    pip install torch torchvision torchaudio \
+        --index-url https://download.pytorch.org/whl/cu124
+
+    # flash-attention ships sm_90 kernels upstream
+    pip install flash-attn --no-build-isolation || \
+        warn "flash-attn install failed; SDPA fallback will be used automatically."
+
+    install_pip_packages
+}
+
+# ── DGX Spark custom-wheels install ──────────────────────────────────────────
 
 install_from_wheels() {
-    info "Attempting install from latest GitHub Release assets..."
+    info "DGX Spark profile: attempting install from latest GitHub Release assets..."
     mkdir -p "${WHEEL_DIR}"
     rm -f "${WHEEL_DIR}"/*.whl "${WHEEL_DIR}/SHA256SUMS" 2>/dev/null || true
 
-    # Query latest release assets through GitHub API.
     local release_assets
     release_assets="$(fetch_latest_release_assets || true)"
 
@@ -128,7 +158,6 @@ install_from_wheels() {
         return
     fi
 
-    # Download wheel assets and checksum manifest.
     local downloaded_any=0
     while IFS='|' read -r filename url; do
         [[ -z "${filename}" ]] && continue
@@ -158,7 +187,6 @@ install_from_wheels() {
         return
     fi
 
-    # Mandatory integrity check when release wheel assets are present.
     if [[ ! -f "${WHEEL_DIR}/SHA256SUMS" ]]; then
         error "Release wheels found but SHA256SUMS is missing. Refusing to install unverified artifacts."
     fi
@@ -169,33 +197,27 @@ install_from_wheels() {
         sha256sum -c SHA256SUMS
     ) || error "Checksum verification failed for release assets."
 
-    # Install wheels in dependency order
     info "Installing wheels..."
-
-    # PyTorch first
     TORCH_WHEEL=$(find "${WHEEL_DIR}" -maxdepth 1 -name "torch-*.whl" 2>/dev/null | head -1)
     if [[ -n "${TORCH_WHEEL}" ]]; then
         pip install "${TORCH_WHEEL}" --force-reinstall --no-deps
     fi
 
-    # Then other custom wheels
     for wheel in "${wheels[@]}"; do
         [[ "${wheel}" == *"torch-"* ]] && continue
         pip install "${wheel}" --force-reinstall --no-deps
     done
 
-    # Install remaining packages from PyPI
     install_pip_packages
 }
 
-# ── Install pip packages ──────────────────────────────────────────────────────
+# ── Common pip packages ───────────────────────────────────────────────────────
 
 install_pip_packages() {
     info "Installing ML packages from PyPI..."
 
     pip install --upgrade pip setuptools wheel
 
-    # Core ML stack
     pip install \
         transformers \
         accelerate \
@@ -207,12 +229,10 @@ install_pip_packages() {
         sentencepiece \
         protobuf
 
-    # Quantization
     if ! python3 -c "import bitsandbytes" 2>/dev/null; then
         pip install bitsandbytes || warn "bitsandbytes install failed — build from source with ./build/build_bitsandbytes.sh"
     fi
 
-    # Training utilities
     pip install \
         wandb \
         tensorboard \
@@ -240,9 +260,12 @@ verify() {
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 main() {
+    load_profile
+
     echo "╔══════════════════════════════════════════════════╗"
-    echo "║      DGX Spark LLM Stack — Installer            ║"
-    echo "║      GB10 (sm_121) · CUDA 13.0 · Python 3.12    ║"
+    printf "║  DGX Spark LLM Stack — Installer                ║\n"
+    printf "║  Profile: %-38s║\n" "${HW_PROFILE} (${INSTALL_STRATEGY})"
+    printf "║  Arch: %-41s║\n" "${EXPECTED_ARCH:-unknown}"
     echo "╚══════════════════════════════════════════════════╝"
     echo ""
 
@@ -250,6 +273,8 @@ main() {
 
     if [[ "${1:-}" == "--from-source" ]]; then
         install_from_source
+    elif [[ "${INSTALL_STRATEGY:-custom-wheels}" == "upstream-wheels" ]]; then
+        install_upstream_pytorch
     else
         install_from_wheels
     fi

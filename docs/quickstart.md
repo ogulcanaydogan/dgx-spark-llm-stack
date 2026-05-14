@@ -11,13 +11,21 @@ Get a working LLM training & inference setup on your DGX Spark in 5 minutes.
 
 ## Option 1: One-Command Install (Recommended)
 
+**DGX Spark (GB10, default):**
 ```bash
 git clone https://github.com/ogulcanaydogan/dgx-spark-llm-stack.git
 cd dgx-spark-llm-stack
 ./install.sh
 ```
 
-This downloads pre-built wheels and installs everything.
+**H100 (Hopper, upstream wheels):**
+```bash
+git clone https://github.com/ogulcanaydogan/dgx-spark-llm-stack.git
+cd dgx-spark-llm-stack
+HW_PROFILE=h100 ./install.sh
+```
+
+The installer detects your hardware profile and picks the correct install path automatically.
 
 ## Option 2: Manual Install
 
