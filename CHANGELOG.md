@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `configs/env.sh` now sources `configs/profiles/${HW_PROFILE}.env` (default: `dgx-spark`) for backward-compatible hardware selection
   - `scripts/check_compatibility.py --profile h100|dgx-spark` — profile-aware compatibility report; H100 branch marks flash-attention and TransformerEngine as fully supported
   - `COMPATIBILITY.md` H100 section covering Hopper sm_90 framework status
+- **v0.2.0 H100 install path** — profile-aware `install.sh` with `upstream-wheels` branch for H100; installs PyTorch from `download.pytorch.org/whl/cu124` and flash-attention from pip (sm_90 kernels available upstream); DGX Spark custom-wheels flow preserved as default
 
 ## [0.1.0] — 2026-03-13
 

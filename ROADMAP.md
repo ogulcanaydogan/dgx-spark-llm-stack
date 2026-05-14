@@ -88,7 +88,7 @@ Extends the stack beyond DGX Spark to a second hardware family. Profile-based co
 - [x] Profile-aware `configs/env.sh` (selectable via `HW_PROFILE` env, default `dgx-spark`)
 - [x] Profile-aware `scripts/check_compatibility.py --profile h100|dgx-spark`
 - [x] H100 (Hopper, sm_90) documented in `COMPATIBILITY.md`
-- [ ] H100 install path in `install.sh` (skip custom-wheel build, use upstream pip)
+- [x] H100 install path in `install.sh` (skip custom-wheel build, use upstream pip)
 - [ ] H100 Docker variant in `docker/vllm/Dockerfile`
 - [ ] H100 smoke tests (`scripts/smoke_*.sh` profile-aware)
 - [ ] CI matrix: add `h100` profile axis (requires self-hosted x86_64 runner)
